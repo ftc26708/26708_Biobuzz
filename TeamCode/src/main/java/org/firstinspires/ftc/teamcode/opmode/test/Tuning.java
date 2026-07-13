@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode.pedropathing;
+package org.firstinspires.ftc.teamcode.opmode.test;
 
-import static org.firstinspires.ftc.teamcode.pedropathing.Tuning.changes;
-import static org.firstinspires.ftc.teamcode.pedropathing.Tuning.drawCurrent;
-import static org.firstinspires.ftc.teamcode.pedropathing.Tuning.drawCurrentAndHistory;
-import static org.firstinspires.ftc.teamcode.pedropathing.Tuning.follower;
-import static org.firstinspires.ftc.teamcode.pedropathing.Tuning.stopRobot;
-import static org.firstinspires.ftc.teamcode.pedropathing.Tuning.telemetryM;
+import static org.firstinspires.ftc.teamcode.opmode.test.Tuning.changes;
+import static org.firstinspires.ftc.teamcode.opmode.test.Tuning.drawCurrent;
+import static org.firstinspires.ftc.teamcode.opmode.test.Tuning.drawCurrentAndHistory;
+import static org.firstinspires.ftc.teamcode.opmode.test.Tuning.follower;
+import static org.firstinspires.ftc.teamcode.opmode.test.Tuning.stopRobot;
+import static org.firstinspires.ftc.teamcode.opmode.test.Tuning.telemetryM;
 
 import com.bylazar.configurables.PanelsConfigurables;
 import com.bylazar.configurables.annotations.Configurable;
@@ -30,6 +30,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
