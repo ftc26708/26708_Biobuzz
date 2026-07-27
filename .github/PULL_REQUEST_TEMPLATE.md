@@ -1,1 +1,1 @@
-Before issuing a pull request, please see the contributing page.
+Before opening a pull request, please read our [Contributing Guidelines](CONTRIBUTING.md) for information regarding the protocols this codebase follows.
