@@ -27,7 +27,7 @@ All merges into `dev` or `main` require a green CI build and human approval.
 
 ### 1. Strict Downward Package Flow
 Please follow the unidirectional import chain: `opmode` ➔ `cmd` ➔ `robot` ➔ `subsys` ➔ `util`. (For more information on the structure of the codebase, please refer [here](../README.md)).
-* **Import Limits:** Please do not import higher-level packages into lower-level ones (e.g., `subsys` importing `cmb`).
+* **Import Limits:** Please do not import higher-level packages into lower-level ones (e.g., `subsys` importing `cmd`).
 * **Lateral Exceptions:** Allowed only within `.cmd` for macros, `.util` for helpers, and `.opmode` for base inheritance.
 
 ### 2. Explain the "Why" in Comments
