@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.util.Constants;
 
 public class Drivetrain {
     public final Follower follower;
-    private static PoseTracker tracker;
+    private final PoseTracker tracker;
     private static Pose offsets;
 
     public Drivetrain(HardwareMap hardwareMap) {
@@ -39,22 +39,22 @@ public class Drivetrain {
             follower.setStartingPose(new Pose(70.75, 70.75, Math.toRadians(90)));
         }
 
-        saveTracker();
+        saveOffsets();
     }
 
     public Drivetrain(HardwareMap hardwareMap, Pose startPose) {
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(startPose);
-        saveTracker();
+        tracker = follower.getPoseTracker();
+        saveOffsets();
     }
 
     public void periodic() {
         follower.update();
-        saveTracker();
+        saveOffsets();
     }
 
-    public void saveTracker() {
-        tracker = follower.getPoseTracker();
+    private void saveOffsets() {
         offsets = new Pose(
                 tracker.getXOffset(),
                 tracker.getYOffset(),
