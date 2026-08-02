@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode.opmode.test;
 
-import static org.firstinspires.ftc.teamcode.opmode.test.Tuning.changes;
-import static org.firstinspires.ftc.teamcode.opmode.test.Tuning.drawCurrent;
-import static org.firstinspires.ftc.teamcode.opmode.test.Tuning.drawCurrentAndHistory;
-import static org.firstinspires.ftc.teamcode.opmode.test.Tuning.follower;
-import static org.firstinspires.ftc.teamcode.opmode.test.Tuning.stopRobot;
-import static org.firstinspires.ftc.teamcode.opmode.test.Tuning.telemetryM;
+import static org.firstinspires.ftc.teamcode.opmode.test.PedroTuning.changes;
+import static org.firstinspires.ftc.teamcode.opmode.test.PedroTuning.drawCurrent;
+import static org.firstinspires.ftc.teamcode.opmode.test.PedroTuning.drawCurrentAndHistory;
+import static org.firstinspires.ftc.teamcode.opmode.test.PedroTuning.follower;
+import static org.firstinspires.ftc.teamcode.opmode.test.PedroTuning.stopRobot;
+import static org.firstinspires.ftc.teamcode.opmode.test.PedroTuning.telemetryM;
 
 import com.bylazar.configurables.PanelsConfigurables;
 import com.bylazar.configurables.annotations.Configurable;
@@ -31,7 +31,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.util.Constants;
+import org.firstinspires.ftc.teamcode.util.PedroConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +43,8 @@ import java.util.List;
  * @version 1.0, 6/26/2025
  */
 @Configurable
-@TeleOp(name = "Tuning", group = "Pedro Pathing")
-public class Tuning extends SelectableOpMode {
+@TeleOp(name = "Drivetrain Tuner", group = "Pedro Pathing")
+public class PedroTuning extends SelectableOpMode {
     public static Follower follower;
 
     @IgnoreConfigurable
@@ -56,7 +56,7 @@ public class Tuning extends SelectableOpMode {
     @IgnoreConfigurable
     static ArrayList<String> changes = new ArrayList<>();
 
-    public Tuning() {
+    public PedroTuning() {
         super("Select a Tuning OpMode", s -> {
             s.folder("Localization", l -> {
                 l.add("Localization Test", LocalizationTest::new);
@@ -94,10 +94,10 @@ public class Tuning extends SelectableOpMode {
     @Override
     public void onSelect() {
         if (follower == null) {
-            follower = Constants.createFollower(hardwareMap);
+            follower = PedroConstants.createFollower(hardwareMap);
             PanelsConfigurables.INSTANCE.refreshClass(this);
         } else {
-            follower = Constants.createFollower(hardwareMap);
+            follower = PedroConstants.createFollower(hardwareMap);
         }
 
         follower.setStartingPose(new Pose());

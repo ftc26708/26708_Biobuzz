@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.util.Constants;
+import org.firstinspires.ftc.teamcode.util.PedroConstants;
 
 public class Drivetrain {
     public final Follower follower;
@@ -25,7 +25,7 @@ public class Drivetrain {
                 odo.getHeading(AngleUnit.RADIANS)
         );
 
-        follower = Constants.createFollower(hardwareMap);
+        follower = PedroConstants.createFollower(hardwareMap);
         tracker = follower.getPoseTracker();
 
         if (offsets != null) {
@@ -43,7 +43,7 @@ public class Drivetrain {
     }
 
     public Drivetrain(HardwareMap hardwareMap, Pose startPose) {
-        follower = Constants.createFollower(hardwareMap);
+        follower = PedroConstants.createFollower(hardwareMap);
         follower.setStartingPose(startPose);
         tracker = follower.getPoseTracker();
         saveOffsets();
