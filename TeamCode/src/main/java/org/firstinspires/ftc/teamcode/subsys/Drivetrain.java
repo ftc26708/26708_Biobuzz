@@ -34,7 +34,7 @@ public class Drivetrain {
      * @param hardwareMap FTC hardware map used to retrieve robot hardware
      */
     public Drivetrain(HardwareMap hardwareMap) {
-        GoBildaPinpointDriver odo = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
+        GoBildaPinpointDriver odo = hardwareMap.get(GoBildaPinpointDriver.class, "PC");
         odo.update();
 
         Pose localizerPose = new Pose (
