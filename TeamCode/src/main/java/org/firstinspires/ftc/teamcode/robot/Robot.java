@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import com.pedropathing.geometry.Pose;
+import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.subsys.Drivetrain;

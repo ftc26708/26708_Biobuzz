@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.opmode.BaseOpMode;
 public class DtLocalizationTest extends BaseOpMode {
     @Override
     protected void onLoop() {
-        telemetry.addData("Pose", robot.drivetrain.follower.getPose());
+        telemetry.addData("Pose", robot.drivetrain.follower.pose());
         telemetry.update();
     }
 }

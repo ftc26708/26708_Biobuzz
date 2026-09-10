@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsys;
 
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.Pose;
+import com.pedropathing.math.Pose;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -35,8 +35,9 @@ public class Drivetrain {
                 odo.getHeading(AngleUnit.RADIANS)
         );
 
-        follower = PedroConstants.createFollower(hardwareMap);
-        follower.setStartingPose(savedPose);
+        follower = PedroConstants.create(hardwareMap);
+        follower.setPose(savedPose);
+        follower.update();
     }
 
     /**
@@ -49,8 +50,9 @@ public class Drivetrain {
      * @param startPose initial field pose of the robot
      */
     public Drivetrain(HardwareMap hardwareMap, Pose startPose) {
-        follower = PedroConstants.createFollower(hardwareMap);
-        follower.setStartingPose(startPose);
+        follower = PedroConstants.create(hardwareMap);
+        follower.setPose(startPose);
+        follower.update();
     }
 
     /**
