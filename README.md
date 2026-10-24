@@ -2,11 +2,10 @@
 
 ---
 
-Welcome to the official code repository of **Team 26708, The Argonauts,** for the BIOBUZZ™ season. This codebase is built on top of the official FIRST Tech Challenge SDK, customized to leverage three main software pillars:
+Welcome to the official code repository of **Team 26708, The Argonauts,** for the BIOBUZZ™ season. This codebase is built on top of the official FIRST Tech Challenge SDK, customized to leverage:
 
 * **Pedro Pathing:** For precise localizer-driven trajectory following and drivetrain movement.
 * **Ivy:** For asynchronous, clean, command-based control flow to run both parallel and sequential actions effortlessly.
-* **FTControl Panels:** For real-time telemetry, graphs, diagnostics, and live constant tuning.
 
 ---
 
