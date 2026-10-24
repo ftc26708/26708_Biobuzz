@@ -13,11 +13,11 @@ public class DtDriveTest extends BaseOpMode {
     protected void onLoop() {
         DrivePowers powers = ManualDrive.fieldCentric(
                 -gamepad1.left_stick_y,
-                gamepad1.left_stick_x,
-                gamepad1.right_stick_x,
+                -gamepad1.left_stick_x,
+                -gamepad1.right_stick_x,
                 robot.drivetrain.follower.pose().heading()
         );
-        robot.drivetrain.follower.manual(powers);
+        ManualDrive.driveOrHold(robot.drivetrain.follower, powers);
 
         if (gamepad1.left_bumper) {
             robot.drivetrain.follower.setPose(new Pose(70.75, 70.75, 0));
