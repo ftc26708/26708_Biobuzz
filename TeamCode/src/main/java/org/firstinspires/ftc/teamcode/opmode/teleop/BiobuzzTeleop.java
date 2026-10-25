@@ -20,10 +20,15 @@ public class BiobuzzTeleop extends BaseOpMode {
         );
         ManualDrive.driveOrHold(robot.drivetrain.follower, powers);
 
+        // Cache vision data to avoid duplicate queries
+        boolean hasTarget = robot.vision.hasTarget();
+        double bearing = 0.0;
+        double distance = 0.0;
+
         // Auto-aiming turret and shooter control
-        if (gamepad1.right_bumper && robot.vision.hasTarget()) {
-            double bearing = robot.vision.getTargetBearing();
-            double distance = robot.vision.getTargetDistance();
+        if (gamepad1.right_bumper && hasTarget) {
+            bearing = robot.vision.getTargetBearing();
+            distance = robot.vision.getTargetDistance();
 
             robot.turret.trackTarget(bearing);
             robot.shooter.setDistanceTarget(distance);
@@ -38,9 +43,13 @@ public class BiobuzzTeleop extends BaseOpMode {
             robot.shooter.stop();
         }
 
-        telemetry.addData("Has Target", robot.vision.hasTarget());
+        // Telemetry
+        telemetry.addData("Has Target", hasTarget);
         telemetry.addData("Turret Aligned", robot.turret.isAligned());
         telemetry.addData("Shooter At Speed", robot.shooter.isAtSpeed());
+        telemetry.addData("Bearing (deg)", bearing);
+        telemetry.addData("Distance (in)", distance);
+        telemetry.addData("Turret Heading (deg)", robot.turret.getHeading());
         telemetry.update();
     }
 

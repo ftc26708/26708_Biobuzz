@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsys;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Range;
 
 /**
  * Subsystem controlling the turret rotation motor.
@@ -12,12 +13,23 @@ public class TurretSubsystem {
 
     private static final double ALIGNMENT_TOLERANCE_DEG = 1.5;
     private static final double KP = 0.02;
+    private static final double TICKS_PER_DEGREE = 28.0;
 
     private double currentError = 0.0;
 
     public TurretSubsystem(HardwareMap hardwareMap) {
         turretMotor = hardwareMap.get(DcMotorEx.class, "turret");
+        turretMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    /**
+     * Returns the current heading angle of the turret in degrees.
+     *
+     * @return turret heading in degrees
+     */
+    public double getHeading() {
+        return turretMotor.getCurrentPosition() / TICKS_PER_DEGREE;
     }
 
     /**
@@ -27,8 +39,7 @@ public class TurretSubsystem {
      */
     public void trackTarget(double bearingErrorDeg) {
         this.currentError = bearingErrorDeg;
-        double power = KP * bearingErrorDeg;
-        power = Math.max(-0.8, Math.min(0.8, power));
+        double power = Range.clip(KP * bearingErrorDeg, -0.8, 0.8);
         turretMotor.setPower(power);
     }
 
