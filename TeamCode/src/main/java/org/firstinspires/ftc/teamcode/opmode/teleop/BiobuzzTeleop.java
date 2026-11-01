@@ -33,7 +33,7 @@ public class BiobuzzTeleop extends BaseOpMode {
             robot.turret.trackTarget(bearing);
             robot.shooter.setDistanceTarget(distance);
 
-            if (robot.turret.isAligned() && robot.shooter.isAtSpeed() && gamepad1.right_trigger > 0.5) {
+            if (robot.turret.isAligned() && robot.shooter.isAtSpeed() && gamepad1.right_trigger > 0.3) {
                 robot.shooter.feed();
             } else {
                 robot.shooter.resetFeeder();
