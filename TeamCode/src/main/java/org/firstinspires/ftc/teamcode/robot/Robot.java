@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.subsys.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsys.Flower;
 import org.firstinspires.ftc.teamcode.subsys.Intake;
 import org.firstinspires.ftc.teamcode.subsys.Transfer;
 
@@ -15,6 +16,7 @@ public class Robot {
     public final Drivetrain drivetrain;
     public final Intake intake;
     public final Transfer transfer;
+    public final Flower flower;
 
     // Initializes subsystems and restores the robot's last known field position
     public Robot(HardwareMap hardwareMap) {
@@ -32,6 +34,10 @@ public class Robot {
                 "transfer",
                 "blocker",
                 DcMotorEx.Direction.REVERSE,
+                0.4,
+                0.6);
+        flower = new Flower(hardwareMap,
+                "flower",
                 0.4,
                 0.6);
     }
@@ -52,6 +58,10 @@ public class Robot {
                 "transfer",
                 "blocker",
                 DcMotorEx.Direction.REVERSE,
+                0.4,
+                0.6);
+        flower = new Flower(hardwareMap,
+                "flower",
                 0.4,
                 0.6);
     }
