@@ -50,6 +50,7 @@ public class BiobuzzTeleop extends BaseOpMode {
         telemetry.addData("Bearing (deg)", bearing);
         telemetry.addData("Distance (in)", distance);
         telemetry.addData("Turret Heading (deg)", robot.turret.getHeading());
+        telemetry.addData("Hood Position", robot.shooter.getHoodPosition());
         telemetry.update();
     }
 
