@@ -1,13 +1,16 @@
 package org.firstinspires.ftc.teamcode.subsys;
 
+import com.pedropathing.ivy.Command;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.cmd.TurretCommands;
+
 /**
  * Dumb Turret Subsystem controlling turret rotation.
- * Provides simple, direct manual commands (setPower, turnLeft, turnRight, stop).
+ * Provides simple, direct manual commands and PedroPathing Ivy command factories.
  */
 public class TurretSubsystem {
     private final DcMotorEx turretMotor;
@@ -95,6 +98,57 @@ public class TurretSubsystem {
         DcMotor.RunMode currentMode = turretMotor.getMode();
         turretMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setMode(currentMode);
+    }
+
+    // =========================================================================
+    // PedroPathing Ivy Command Factory Helper Methods
+    // =========================================================================
+
+    /**
+     * Returns an Ivy command to turn the turret left.
+     *
+     * @return Ivy command
+     */
+    public Command turnLeftCommand() {
+        return TurretCommands.turnLeft(this);
+    }
+
+    /**
+     * Returns an Ivy command to turn the turret right.
+     *
+     * @return Ivy command
+     */
+    public Command turnRightCommand() {
+        return TurretCommands.turnRight(this);
+    }
+
+    /**
+     * Returns an Ivy command to stop the turret.
+     *
+     * @return Ivy command
+     */
+    public Command stopCommand() {
+        return TurretCommands.stop(this);
+    }
+
+    /**
+     * Returns an Ivy command to rotate the turret to a target angle in degrees.
+     *
+     * @param targetAngleDeg target heading in degrees
+     * @return Ivy command
+     */
+    public Command turnToAngleCommand(double targetAngleDeg) {
+        return TurretCommands.turnToAngle(this, targetAngleDeg);
+    }
+
+    /**
+     * Returns an Ivy command to continuously auto-aim the turret using Limelight vision data.
+     *
+     * @param vision vision subsystem instance
+     * @return Ivy command
+     */
+    public Command trackTargetCommand(VisionSubsystem vision) {
+        return TurretCommands.trackTarget(this, vision);
     }
 
     public void periodic() {
