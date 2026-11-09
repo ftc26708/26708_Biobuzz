@@ -25,8 +25,8 @@ public class BiobuzzTeleop extends BaseOpMode {
         double bearing = 0.0;
         double distance = 0.0;
 
-        // Auto-aiming turret and shooter control
-        if (gamepad1.right_bumper && hasTarget) {
+        // Auto-aiming turret and shooter control (always active when target is visible)
+        if (hasTarget) {
             bearing = robot.vision.getTargetBearing();
             distance = robot.vision.getTargetDistance();
 
