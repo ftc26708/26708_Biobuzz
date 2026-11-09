@@ -20,36 +20,36 @@ public class BiobuzzTeleop extends BaseOpMode {
         );
         ManualDrive.driveOrHold(robot.drivetrain.follower, powers);
 
-        // Cache vision data to avoid duplicate queries
+        // Simple manual turret control via DPAD
+        if (gamepad1.dpad_left) {
+            robot.turret.turnLeft();
+        } else if (gamepad1.dpad_right) {
+            robot.turret.turnRight();
+        } else {
+            robot.turret.stop();
+        }
+
+        // Cache vision distance for automatic flywheel RPM & hood adjustment
         boolean hasTarget = robot.vision.hasTarget();
-        double bearing = 0.0;
-        double distance = 0.0;
+        double distance = hasTarget ? robot.vision.getTargetDistance() : 0.0;
 
-        // Auto-aiming turret and shooter control (always active when target is visible)
         if (hasTarget) {
-            bearing = robot.vision.getTargetBearing();
-            distance = robot.vision.getTargetDistance();
-
-            robot.turret.trackTarget(bearing);
             robot.shooter.setDistanceTarget(distance);
 
-            if (robot.turret.isAligned() && robot.shooter.isAtSpeed() && gamepad1.right_trigger > 0.3) {
+            if (robot.shooter.isAtSpeed() && gamepad1.right_trigger > 0.3) {
                 robot.shooter.feed();
             } else {
                 robot.shooter.resetFeeder();
             }
         } else {
-            robot.turret.stop();
             robot.shooter.stop();
         }
 
         // Telemetry
         telemetry.addData("Has Target", hasTarget);
-        telemetry.addData("Turret Aligned", robot.turret.isAligned());
-        telemetry.addData("Shooter At Speed", robot.shooter.isAtSpeed());
-        telemetry.addData("Bearing (deg)", bearing);
-        telemetry.addData("Distance (in)", distance);
+        telemetry.addData("Target Distance (in)", distance);
         telemetry.addData("Turret Heading (deg)", robot.turret.getHeading());
+        telemetry.addData("Shooter At Speed", robot.shooter.isAtSpeed());
         telemetry.addData("Hood Position", robot.shooter.getHoodPosition());
         telemetry.update();
     }
