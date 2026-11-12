@@ -11,13 +11,14 @@ public class TransferCalibration extends BaseOpMode {
 
     private Robot robot;
 
-    private boolean intakesDeployed = false;
+    // Match initial boolean states to onInit() hardware positions
+    private boolean intakesDeployed = true;
     private boolean blockerOpen = false;
 
-    private boolean prevIntakeToggle;
-    private boolean prevBlockerToggle;
-    private boolean prevUp;
-    private boolean prevDown;
+    private boolean prevIntakeToggle = false;
+    private boolean prevBlockerToggle = false;
+    private boolean prevUp = false;
+    private boolean prevDown = false;
 
     private double openPos = 0.5;
     private double closedPos = 0.0;
@@ -26,15 +27,11 @@ public class TransferCalibration extends BaseOpMode {
     public void onInit() {
         robot = new Robot(hardwareMap);
 
-        robot.intake.setDeploymentFront(false);
-        robot.intake.setDeploymentBack(false);
+        robot.intake.setDeploymentFront(intakesDeployed);
+        robot.intake.setDeploymentBack(intakesDeployed);
 
-        // Read initial blocker positions configured in Robot
-        robot.transfer.setBlocker(true);
-        openPos = robot.transfer.blocker.getPosition();
-
-        robot.transfer.setBlocker(false);
-        closedPos = robot.transfer.blocker.getPosition();
+        robot.transfer.setPositions(openPos, closedPos);
+        robot.transfer.setBlocker(blockerOpen);
     }
 
     @Override
@@ -53,29 +50,23 @@ public class TransferCalibration extends BaseOpMode {
         // Toggle both intake deployers
         if (gamepad1.right_stick_button && !prevIntakeToggle) {
             intakesDeployed = !intakesDeployed;
-
             robot.intake.setDeploymentFront(intakesDeployed);
             robot.intake.setDeploymentBack(intakesDeployed);
         }
-
         prevIntakeToggle = gamepad1.right_stick_button;
 
         // Intake motor: right bumper reverses direction
         double intakePower = gamepad1.right_trigger;
-
         if (gamepad1.right_bumper) {
             intakePower *= -1;
         }
-
         robot.intake.intake(intakePower);
 
         // Transfer motor: left bumper reverses direction
         double transferPower = gamepad1.left_trigger;
-
         if (gamepad1.left_bumper) {
             transferPower *= -1;
         }
-
         robot.transfer.transfer(transferPower);
 
         // Toggle blocker open/closed
@@ -83,16 +74,13 @@ public class TransferCalibration extends BaseOpMode {
             blockerOpen = !blockerOpen;
             robot.transfer.setBlocker(blockerOpen);
         }
-
         prevBlockerToggle = gamepad1.left_stick_button;
 
         // Adjust currently selected blocker position
         double adjustment = 0;
-
         if (gamepad1.dpad_up && !prevUp) {
             adjustment += 0.005;
         }
-
         if (gamepad1.dpad_down && !prevDown) {
             adjustment -= 0.005;
         }
@@ -100,15 +88,12 @@ public class TransferCalibration extends BaseOpMode {
         if (adjustment != 0) {
             if (blockerOpen) {
                 openPos = clip(openPos + adjustment);
-                robot.transfer.setPositions(openPos, closedPos);
-                robot.transfer.setBlocker(true);
             } else {
                 closedPos = clip(closedPos + adjustment);
-                robot.transfer.setPositions(openPos, closedPos);
-                robot.transfer.setBlocker(false);
             }
+            robot.transfer.setPositions(openPos, closedPos);
+            robot.transfer.setBlocker(blockerOpen);
         }
-
         prevUp = gamepad1.dpad_up;
         prevDown = gamepad1.dpad_down;
 
@@ -119,14 +104,14 @@ public class TransferCalibration extends BaseOpMode {
         telemetry.addLine("BLOCKER: LS Button = Toggle Open/Closed | D-Pad Up/Down = Adjust");
 
         telemetry.addData("Intakes", intakesDeployed ? "DEPLOYED" : "RETRACTED");
-        telemetry.addData("Blocker Status", blockerOpen ? "OPEN" : "CLOSED");
-        telemetry.addData("Open Position", openPos);
-        telemetry.addData("Closed Position", closedPos);
+        telemetry.addData("Blocker State", blockerOpen ? "OPEN" : "CLOSED");
+        telemetry.addData("Blocker Open Pos", "%.3f", openPos);
+        telemetry.addData("Blocker Closed Pos", "%.3f", closedPos);
 
         telemetry.update();
     }
 
     private double clip(double position) {
-        return Math.max(0, Math.min(1, position));
+        return Math.max(0.0, Math.min(1.0, position));
     }
 }
