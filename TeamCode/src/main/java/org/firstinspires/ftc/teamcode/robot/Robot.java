@@ -4,8 +4,6 @@ import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.subsys.Drivetrain;
-import org.firstinspires.ftc.teamcode.subsys.Shooter;
-import org.firstinspires.ftc.teamcode.subsys.Turret;
 
 /**
  * Composes and owns the robot's subsystems.
@@ -15,8 +13,6 @@ import org.firstinspires.ftc.teamcode.subsys.Turret;
  */
 public class Robot {
     public final Drivetrain drivetrain;
-    public final Turret turret;
-    public final Shooter shooter;
 
     /**
      * Creates the robot using the drivetrain's default localization behavior.
@@ -25,8 +21,6 @@ public class Robot {
      */
     public Robot(HardwareMap hardwareMap) {
         drivetrain = new Drivetrain(hardwareMap);
-        turret = new Turret(hardwareMap);
-        shooter = new Shooter(hardwareMap);
     }
 
     /**
@@ -37,8 +31,6 @@ public class Robot {
      */
     public Robot(HardwareMap hardwareMap, Pose startPose) {
         drivetrain = new Drivetrain(hardwareMap, startPose);
-        turret = new Turret(hardwareMap);
-        shooter = new Shooter(hardwareMap);
     }
 
     /**
@@ -46,6 +38,5 @@ public class Robot {
      */
     public void periodic() {
         drivetrain.periodic();
-        shooter.periodic();
     }
 }
