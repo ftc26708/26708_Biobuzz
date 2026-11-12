@@ -2,35 +2,36 @@ package org.firstinspires.ftc.teamcode.opmode.test;
 
 import com.pedropathing.follower.ManualDrive;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 import org.firstinspires.ftc.teamcode.opmode.BaseOpMode;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
 @TeleOp(name = "Flower Calibration")
 public class FlowerCalibration extends BaseOpMode {
-
     private Robot robot;
 
-    private boolean intakesDeployed = false;
+    // Match initial boolean states to onInit() hardware positions
+    private boolean intakesDeployed = true;
     private boolean flowerUp = false;
 
-    private boolean prevIntakeToggle;
-    private boolean prevFlowerToggle;
-    private boolean prevUp;
-    private boolean prevDown;
+    private boolean prevIntakeToggle = false;
+    private boolean prevFlowerToggle = false;
+    private boolean prevUp = false;
+    private boolean prevDown = false;
+
+    private double upPos = 0.4;
+    private double downPos = 0.6;
 
     @Override
     public void onInit() {
         robot = new Robot(hardwareMap);
-
-        robot.intake.setDeploymentFront(false);
-        robot.intake.setDeploymentBack(false);
-        robot.flower.setDeployment(false);
+        robot.intake.setDeploymentFront(intakesDeployed);
+        robot.intake.setDeploymentBack(intakesDeployed);
+        robot.flower.setPositions(upPos, downPos);
+        robot.flower.setDeployment(flowerUp);
     }
 
     @Override
     public void onLoop() {
-
         // Drivetrain
         robot.drivetrain.follower.manual(
                 ManualDrive.fieldCentric(
@@ -44,20 +45,16 @@ public class FlowerCalibration extends BaseOpMode {
         // Toggle both intake deployers
         if (gamepad1.right_stick_button && !prevIntakeToggle) {
             intakesDeployed = !intakesDeployed;
-
             robot.intake.setDeploymentFront(intakesDeployed);
             robot.intake.setDeploymentBack(intakesDeployed);
         }
-
         prevIntakeToggle = gamepad1.right_stick_button;
 
         // Intake motor: right bumper reverses direction
         double intakePower = gamepad1.right_trigger;
-
         if (gamepad1.right_bumper) {
             intakePower *= -1;
         }
-
         robot.intake.intake(intakePower);
 
         // Toggle flower up/down
@@ -65,35 +62,26 @@ public class FlowerCalibration extends BaseOpMode {
             flowerUp = !flowerUp;
             robot.flower.setDeployment(flowerUp);
         }
-
         prevFlowerToggle = gamepad1.left_stick_button;
 
         // Adjust currently selected flower position
         double adjustment = 0;
-
         if (gamepad1.dpad_up && !prevUp) {
             adjustment += 0.005;
         }
-
         if (gamepad1.dpad_down && !prevDown) {
             adjustment -= 0.005;
         }
 
         if (adjustment != 0) {
-            double upPos = flowerUp ? getSelectedPosition() : 0;
-            double downPos = flowerUp ? 0 : getSelectedPosition();
-
             if (flowerUp) {
                 upPos = clip(upPos + adjustment);
-                robot.flower.setPositions(upPos, getOtherPosition());
-                robot.flower.setDeployment(true);
             } else {
                 downPos = clip(downPos + adjustment);
-                robot.flower.setPositions(getOtherPosition(), downPos);
-                robot.flower.setDeployment(false);
             }
+            robot.flower.setPositions(upPos, downPos);
+            robot.flower.setDeployment(flowerUp);
         }
-
         prevUp = gamepad1.dpad_up;
         prevDown = gamepad1.dpad_down;
 
@@ -103,25 +91,14 @@ public class FlowerCalibration extends BaseOpMode {
         telemetry.addLine("INTAKE: RT = Forward | RB + RT = Reverse");
         telemetry.addLine("FLOWER: LS Button = Toggle Up/Down");
         telemetry.addLine("FLOWER: D-Pad Up/Down = Adjust Selected Position");
-
         telemetry.addData("Intakes", intakesDeployed ? "DEPLOYED" : "RETRACTED");
-        telemetry.addData("Flower Position", flowerUp ? "UP" : "DOWN");
-
+        telemetry.addData("Flower State", flowerUp ? "UP" : "DOWN");
+        telemetry.addData("Flower Up Pos", "%.3f", upPos);
+        telemetry.addData("Flower Down Pos", "%.3f", downPos);
         telemetry.update();
     }
 
-    private double getSelectedPosition() {
-        return flowerUp ? upPos : downPos;
-    }
-
-    private double getOtherPosition() {
-        return flowerUp ? downPos : upPos;
-    }
-
-    private double upPos = 0.4;
-    private double downPos = 0.6;
-
     private double clip(double position) {
-        return Math.max(0, Math.min(1, position));
+        return Math.max(0.0, Math.min(1.0, position));
     }
 }
