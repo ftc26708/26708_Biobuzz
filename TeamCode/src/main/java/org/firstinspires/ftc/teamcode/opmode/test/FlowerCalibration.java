@@ -7,7 +7,6 @@ import org.firstinspires.ftc.teamcode.robot.Robot;
 
 @TeleOp(name = "Flower Calibration")
 public class FlowerCalibration extends BaseOpMode {
-    private Robot robot;
 
     // Match initial boolean states to onInit() hardware positions
     private boolean intakesDeployed = true;
@@ -23,7 +22,6 @@ public class FlowerCalibration extends BaseOpMode {
 
     @Override
     public void onInit() {
-        robot = new Robot(hardwareMap);
         robot.intake.setDeploymentFront(intakesDeployed);
         robot.intake.setDeploymentBack(intakesDeployed);
         robot.flower.setPositions(upPos, downPos);

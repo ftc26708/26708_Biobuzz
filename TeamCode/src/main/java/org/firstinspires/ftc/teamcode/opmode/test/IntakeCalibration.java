@@ -10,8 +10,6 @@ import org.firstinspires.ftc.teamcode.robot.Robot;
 @TeleOp(name = "Intake Calibration")
 public class IntakeCalibration extends BaseOpMode {
 
-    private Robot robot;
-
     private boolean frontDeployed = false;
     private boolean backDeployed = false;
 
@@ -26,8 +24,6 @@ public class IntakeCalibration extends BaseOpMode {
 
     @Override
     public void onInit() {
-        robot = new Robot(hardwareMap);
-
         robot.intake.setDeploymentFront(false);
         robot.intake.setDeploymentBack(false);
     }

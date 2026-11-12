@@ -9,8 +9,6 @@ import org.firstinspires.ftc.teamcode.robot.Robot;
 @TeleOp(name = "Transfer Calibration")
 public class TransferCalibration extends BaseOpMode {
 
-    private Robot robot;
-
     // Match initial boolean states to onInit() hardware positions
     private boolean intakesDeployed = true;
     private boolean blockerOpen = false;
@@ -25,8 +23,6 @@ public class TransferCalibration extends BaseOpMode {
 
     @Override
     public void onInit() {
-        robot = new Robot(hardwareMap);
-
         robot.intake.setDeploymentFront(intakesDeployed);
         robot.intake.setDeploymentBack(intakesDeployed);
 
