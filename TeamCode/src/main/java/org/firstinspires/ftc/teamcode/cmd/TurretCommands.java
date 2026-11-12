@@ -6,11 +6,11 @@ import static com.pedropathing.ivy.commands.Commands.waitMs;
 import com.pedropathing.ivy.Command;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.subsys.TurretSubsystem;
-import org.firstinspires.ftc.teamcode.subsys.VisionSubsystem;
+import org.firstinspires.ftc.teamcode.subsys.Turret;
+
 
 /**
- * Command factory class creating reusable PedroPathing Ivy commands for {@link TurretSubsystem}.
+ * Command factory class creating reusable PedroPathing Ivy commands for {@link Turret}.
  */
 public final class TurretCommands {
 
@@ -26,7 +26,7 @@ public final class TurretCommands {
      * @param turret turret subsystem instance
      * @return Ivy command
      */
-    public static Command turnLeft(TurretSubsystem turret) {
+    public static Command turnLeft(Turret turret) {
         return turnLeft(turret, DEFAULT_SPEED);
     }
 
@@ -37,7 +37,7 @@ public final class TurretCommands {
      * @param speed speed [0.0, 1.0]
      * @return Ivy command
      */
-    public static Command turnLeft(TurretSubsystem turret, double speed) {
+    public static Command turnLeft(Turret turret, double speed) {
         return instant(() -> turret.turnLeft(speed)).requiring(turret);
     }
 
@@ -47,7 +47,7 @@ public final class TurretCommands {
      * @param turret turret subsystem instance
      * @return Ivy command
      */
-    public static Command turnRight(TurretSubsystem turret) {
+    public static Command turnRight(Turret turret) {
         return turnRight(turret, DEFAULT_SPEED);
     }
 
@@ -58,7 +58,7 @@ public final class TurretCommands {
      * @param speed speed [0.0, 1.0]
      * @return Ivy command
      */
-    public static Command turnRight(TurretSubsystem turret, double speed) {
+    public static Command turnRight(Turret turret, double speed) {
         return instant(() -> turret.turnRight(speed)).requiring(turret);
     }
 
@@ -69,7 +69,7 @@ public final class TurretCommands {
      * @param power motor power [-1.0, 1.0]
      * @return Ivy command
      */
-    public static Command setPower(TurretSubsystem turret, double power) {
+    public static Command setPower(Turret turret, double power) {
         return instant(() -> turret.setPower(power)).requiring(turret);
     }
 
@@ -79,7 +79,7 @@ public final class TurretCommands {
      * @param turret turret subsystem instance
      * @return Ivy command
      */
-    public static Command stop(TurretSubsystem turret) {
+    public static Command stop(Turret turret) {
         return instant(turret::stop).requiring(turret);
     }
 
@@ -89,7 +89,7 @@ public final class TurretCommands {
      * @param turret turret subsystem instance
      * @return Ivy command
      */
-    public static Command resetEncoder(TurretSubsystem turret) {
+    public static Command resetEncoder(Turret turret) {
         return instant(turret::resetEncoder);
     }
 
@@ -101,7 +101,7 @@ public final class TurretCommands {
      * @param durationMs duration in milliseconds
      * @return Ivy command
      */
-    public static Command turnLeftForMs(TurretSubsystem turret, double speed, long durationMs) {
+    public static Command turnLeftForMs(Turret turret, double speed, long durationMs) {
         return turnLeft(turret, speed)
                 .then(waitMs(durationMs))
                 .then(stop(turret));
@@ -115,7 +115,7 @@ public final class TurretCommands {
      * @param durationMs duration in milliseconds
      * @return Ivy command
      */
-    public static Command turnRightForMs(TurretSubsystem turret, double speed, long durationMs) {
+    public static Command turnRightForMs(Turret turret, double speed, long durationMs) {
         return turnRight(turret, speed)
                 .then(waitMs(durationMs))
                 .then(stop(turret));
@@ -128,7 +128,7 @@ public final class TurretCommands {
      * @param targetAngleDeg target heading in degrees
      * @return Ivy command
      */
-    public static Command turnToAngle(TurretSubsystem turret, double targetAngleDeg) {
+    public static Command turnToAngle(Turret turret, double targetAngleDeg) {
         return Command.build()
                 .setExecute(() -> {
                     double error = targetAngleDeg - turret.getHeading();
@@ -147,7 +147,7 @@ public final class TurretCommands {
      * @param vision vision subsystem instance
      * @return Ivy command
      */
-    public static Command trackTarget(TurretSubsystem turret, VisionSubsystem vision) {
+    /*public static Command trackTarget(Turret turret, VisionSubsystem vision) {
         return Command.build()
                 .setExecute(() -> {
                     if (vision.hasTarget()) {
@@ -162,4 +162,5 @@ public final class TurretCommands {
                 .setEnd(interrupted -> turret.stop())
                 .requiring(turret);
     }
-}
+
+*/
