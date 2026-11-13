@@ -19,41 +19,42 @@ import com.qualcomm.robotcore.util.Range;
  * </ul>
  */
 public class Shooter {
-    private final DcMotorEx shooter;
-    private final Servo hood;
+    public final DcMotorEx shooter;
+    public final Servo hood;
 
-    // Motor encoder resolution (ticks per revolution)
+    // Calculated hardware constants
     private static final double TICKS_PER_REV = 28.0;
-
-    // Velocity control & RPM tolerance
-    private static final double RPM_TOLERANCE = 50.0;
-
-    // Adjustable Hood servo positions for undershooter arch trajectory
-    private static final double HOOD_BASE_POSITION = 0.20; // TODO: find actual value for hood servo base position
     private static final double HOOD_BASE_ANGLE = 65.0; // Degrees from horizontal plane
-    private static final double DEGREES_PER_HUNDREDTH = (300.0/100.0)*(32.0/44.0);
-    private static final double MIN_DISTANCE_INCHES = 24.0;
-    private static final double MAX_DISTANCE_INCHES = 120.0;
+    private static final double DEGREES_PER_HUNDREDTH = (300.0 / 100.0) * (32.0 / 44.0);
+
+    // Tunable hood base servo position
+    public double hoodBasePosition;
 
     // State variables
     private double targetRPM = 0.0;
-    private double actualRPM = 0.0;
-    private double targetHoodAngle = 0.0;
 
-    public Shooter(HardwareMap hardwareMap) {
-        shooter = hardwareMap.get(DcMotorEx.class, "flywheel");
-        hood = hardwareMap.get(Servo.class, "hood");
+    public Shooter(
+            HardwareMap hardwareMap,
+            String flywheelName,
+            String hoodName,
+            DcMotorSimple.Direction direction,
+            double hoodBasePosition) {
+        this.shooter = hardwareMap.get(DcMotorEx.class, flywheelName);
+        this.hood = hardwareMap.get(Servo.class, hoodName);
+        this.hoodBasePosition = hoodBasePosition;
 
-        // TODO: find actual motor direction
-        shooter.setDirection(DcMotorSimple.Direction.FORWARD);
+        this.shooter.setDirection(direction);
+        this.shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        this.shooter.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        setHoodPosition(hoodBasePosition);
+    }
 
-        // Allow high-mass flywheel to coast to prevent wasted energy and excess stress
-        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+    public void setDirection(DcMotorSimple.Direction direction) {
+        shooter.setDirection(direction);
+    }
 
-        // Not using inbuilt PIDF but rather Bang-Bang controller in periodic()
-        shooter.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-
-        setHoodPosition(HOOD_BASE_POSITION);
+    public void setHoodBasePosition(double hoodBasePosition) {
+        this.hoodBasePosition = hoodBasePosition;
     }
 
     /**
@@ -92,16 +93,23 @@ public class Shooter {
     }
 
     /**
+     * Converts hood servo position to angle from horizontal.
      *
      * @param position hood servo position [0.0, 1.0]
      * @return hood angle from horizontal
      */
     public double positionToAngle(double position) {
-        return HOOD_BASE_ANGLE + (position - HOOD_BASE_POSITION) * 100 * DEGREES_PER_HUNDREDTH;
+        return HOOD_BASE_ANGLE + (position - hoodBasePosition) * 100.0 * DEGREES_PER_HUNDREDTH;
     }
 
+    /**
+     * Converts angle from horizontal to hood servo position .
+     *
+     * @param angle hood servo position [0.0, 1.0]
+     * @return hood angle from horizontal
+     */
     public double angleToPosition(double angle) {
-        return (angle - HOOD_BASE_ANGLE) / 100 / DEGREES_PER_HUNDREDTH + HOOD_BASE_POSITION;
+        return (angle - HOOD_BASE_ANGLE) / 100.0 / DEGREES_PER_HUNDREDTH + hoodBasePosition;
     }
 
     /**
@@ -128,7 +136,7 @@ public class Shooter {
      * @param rpm target revolutions per minute
      */
     public void setTargetRPM(double rpm) {
-        this.targetRPM = rpm;;
+        this.targetRPM = rpm;
     }
 
     /**
