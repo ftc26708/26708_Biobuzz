@@ -19,6 +19,8 @@ import java.util.function.DoubleSupplier;
 public final class TurretCommands {
 
     private static final double TRACKING_KP = 0.02;
+    private static final Pose GOAL_1 = new Pose(58, 54.67, 0);
+    private static final Pose GOAL_2 = new Pose(58, 86.83, 0);
 
     private TurretCommands() {
     }
@@ -74,6 +76,34 @@ public final class TurretCommands {
             double dy = targetY - pose.y();
             double fieldAngleRad = Math.atan2(dy, dx);
 
+            double relativeRad = fieldAngleRad - pose.heading();
+            return Math.toDegrees(Math.atan2(Math.sin(relativeRad), Math.cos(relativeRad)));
+        });
+    }
+
+    /**
+     * Continuously aims the turret at whichever of the two field goals is closer to the robot.
+     *
+     * @param turret   turret subsystem instance
+     * @param follower Pedro Pathing Follower instance for live robot pose
+     * @return Ivy command
+     */
+    public static Command turnToClosestGoal(Turret turret, Follower follower) {
+        return turnToDynamicAngleClipped(turret, () -> {
+            Pose pose = follower.pose();
+
+            double dx1 = GOAL_1.x() - pose.x();
+            double dy1 = GOAL_1.y() - pose.y();
+            double distSq1 = dx1 * dx1 + dy1 * dy1;
+
+            double dx2 = GOAL_2.x() - pose.x();
+            double dy2 = GOAL_2.y() - pose.y();
+            double distSq2 = dx2 * dx2 + dy2 * dy2;
+
+            double dx = (distSq1 <= distSq2) ? dx1 : dx2;
+            double dy = (distSq1 <= distSq2) ? dy1 : dy2;
+
+            double fieldAngleRad = Math.atan2(dy, dx);
             double relativeRad = fieldAngleRad - pose.heading();
             return Math.toDegrees(Math.atan2(Math.sin(relativeRad), Math.cos(relativeRad)));
         });
