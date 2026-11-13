@@ -3,7 +3,9 @@ package org.firstinspires.ftc.teamcode.cmd;
 import static com.pedropathing.ivy.commands.Commands.infinite;
 import static com.pedropathing.ivy.commands.Commands.instant;
 
+import com.pedropathing.follower.Follower;
 import com.pedropathing.ivy.Command;
+import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.subsys.Turret;
@@ -54,6 +56,27 @@ public final class TurretCommands {
         })
                 .setEnd(interrupted -> turret.setPower(0))
                 .requiring(turret);
+    }
+
+    /**
+     * Continuously aims the turret at a fixed field coordinate (targetX, targetY).
+     *
+     * @param turret  turret subsystem instance
+     * @param follower Pedro Pathing Follower instance for live robot pose
+     * @param targetX target X coordinate on the field (inches)
+     * @param targetY target Y coordinate on the field (inches)
+     * @return Ivy command
+     */
+    public static Command turnToPoint(Turret turret, Follower follower, double targetX, double targetY) {
+        return turnToDynamicAngleClipped(turret, () -> {
+            Pose pose = follower.pose();
+            double dx = targetX - pose.x();
+            double dy = targetY - pose.y();
+            double fieldAngleRad = Math.atan2(dy, dx);
+
+            double relativeRad = fieldAngleRad - pose.heading();
+            return Math.toDegrees(Math.atan2(Math.sin(relativeRad), Math.cos(relativeRad)));
+        });
     }
 
     /**
