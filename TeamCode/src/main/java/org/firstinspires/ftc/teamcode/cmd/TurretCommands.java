@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.cmd;
 
+import static com.pedropathing.ivy.commands.Commands.infinite;
 import static com.pedropathing.ivy.commands.Commands.instant;
 
 import com.pedropathing.ivy.Command;
@@ -7,14 +8,14 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.subsys.Turret;
 
+import java.util.function.DoubleSupplier;
+
 
 /**
  * Command factory class creating reusable PedroPathing Ivy commands for {@link Turret}.
  */
 public final class TurretCommands {
 
-    private static final double DEFAULT_SPEED = 0.5;
-    private static final double ANGLE_TOLERANCE_DEG = 1.5;
     private static final double TRACKING_KP = 0.02;
 
     private TurretCommands() {
@@ -27,14 +28,30 @@ public final class TurretCommands {
      * @param targetAngleDeg target heading in degrees
      * @return Ivy command
      */
-    public static Command turnToAngle(Turret turret, double targetAngleDeg) {
-        return Command.build()
-                .setExecute(() -> {
-                    double error = Range.clip(targetAngleDeg, -180, 180) - turret.getHeading();
-                    double power = Range.clip(TRACKING_KP * error, -1, 1);
-                    turret.setPower(power);
-                })
-                .setDone(() -> Math.abs(Range.clip(targetAngleDeg, -180, 180) - turret.getHeading()) <= ANGLE_TOLERANCE_DEG)
+    public static Command turnToStaticAngleClipped(Turret turret, double targetAngleDeg) {
+        return infinite(() -> {
+            double clippedAngle = Range.clip(targetAngleDeg, -180, 180);
+            double error = clippedAngle - turret.getHeading();
+            double power = Range.clip(TRACKING_KP * error, -1, 1);
+            turret.setPower(power);
+        })
+                .setEnd(interrupted -> turret.setPower(0))
+                .requiring(turret);
+    }
+
+    /**
+     *
+     * @param turret              turret subsystem instance
+     * @param targetAngleSupplier continuously changing target heading supplier
+     * @return Ivy command
+     */
+    public static Command turnToDynamicAngleClipped(Turret turret, DoubleSupplier targetAngleSupplier) {
+        return infinite(() -> {
+            double clippedAngle = Range.clip(targetAngleSupplier.getAsDouble(), -180, 180);
+            double error = clippedAngle - turret.getHeading();
+            double power = Range.clip(TRACKING_KP * error, -1, 1);
+            turret.setPower(power);
+        })
                 .setEnd(interrupted -> turret.setPower(0))
                 .requiring(turret);
     }
@@ -42,7 +59,7 @@ public final class TurretCommands {
     /**
      * Sets the turret power once
      * @param turret turret subsystem instance
-     * @param power power value
+     * @param power  power value
      * @return Ivy command
      */
     public static Command setPower(Turret turret, double power) {
