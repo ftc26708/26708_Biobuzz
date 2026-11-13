@@ -38,7 +38,7 @@ public class Robot {
                 0.0);
         flower = new Flower(hardwareMap,
                 "flower",
-                0.4,
+                0.25,
                 0.6);
     }
 
