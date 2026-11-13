@@ -34,8 +34,8 @@ public class Robot {
                 "transfer",
                 "blocker",
                 DcMotorEx.Direction.REVERSE,
-                0.4,
-                0.6);
+                0.5,
+                0.0);
         flower = new Flower(hardwareMap,
                 "flower",
                 0.4,
