@@ -51,8 +51,14 @@ public class Robot {
                 "flower",
                 0.25,
                 0.6);
-        turret = new Turret(hardwareMap);
-        shooter = new Shooter(hardwareMap);
+        turret = new Turret(hardwareMap,
+                "turret",
+                DcMotorEx.Direction.REVERSE);
+        shooter = new Shooter(hardwareMap,
+                "shooter",
+                "hood",
+                DcMotorEx.Direction.REVERSE,
+                0.0);
     }
 
     /**
@@ -63,8 +69,6 @@ public class Robot {
      */
     public Robot(HardwareMap hardwareMap, Pose startPose) {
         drivetrain = new Drivetrain(hardwareMap, startPose);
-        turret = new Turret(hardwareMap);
-        shooter = new Shooter(hardwareMap);
         intake = new Intake(hardwareMap,
                 "intake",
                 "frontDeployer",
@@ -84,6 +88,14 @@ public class Robot {
                 "flower",
                 0.4,
                 0.6);
+        turret = new Turret(hardwareMap,
+                "turret",
+                DcMotorEx.Direction.REVERSE);
+        shooter = new Shooter(hardwareMap,
+                "shooter",
+                "hood",
+                DcMotorEx.Direction.REVERSE,
+                0.0);
     }
 
     /**
