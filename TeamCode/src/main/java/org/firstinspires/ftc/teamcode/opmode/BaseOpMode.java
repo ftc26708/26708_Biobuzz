@@ -12,10 +12,10 @@ import java.util.List;
 /**
  * Base class for all OpModes in the project.
  *
- * <p>This class manages the FTC OpMode lifecycle, configures REV Hub bulk
- * caching, initializes the robot, and runs Ivy's scheduler. Subclasses should
- * override the provided hook methods instead of the FTC lifecycle methods
- * directly.
+ * <p>This class manages the OpMode lifecycle and runs the Ivy command
+ * scheduler. Note that subclasses should override the provided hook
+ * methods at the bottom of the class rather than using the FTC SDK's
+ * native lifecycle methods.
  */
 public class BaseOpMode extends OpMode {
     protected Robot robot;
@@ -91,27 +91,27 @@ public class BaseOpMode extends OpMode {
     }
 
     /**
-     * Called once after the framework has completed initialization.
+     * Called once on initialization.
      */
     protected void onInit() {}
 
     /**
-     * Called repeatedly while the OpMode is initialized but not yet started.
+     * Called repeatedly after initialization but before start.
      */
     protected void onInitLoop() {}
 
     /**
-     * Called once when PLAY is pressed.
+     * Called once on start.
      */
     protected void onStart() {}
 
     /**
-     * Called once per control loop while the OpMode is active.
+     * Called repeatedly after start.
      */
     protected void onLoop() {}
 
     /**
-     * Called once after STOP is pressed.
+     * Called once on stop.
      */
     protected void onStop() {}
 }
