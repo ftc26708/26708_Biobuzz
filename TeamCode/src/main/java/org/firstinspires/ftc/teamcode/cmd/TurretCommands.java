@@ -12,17 +12,27 @@ import org.firstinspires.ftc.teamcode.subsys.Turret;
 
 import java.util.function.DoubleSupplier;
 
-
 /**
  * Command factory class creating reusable PedroPathing Ivy commands for {@link Turret}.
  */
 public final class TurretCommands {
+    public static double TRACKING_KP = 0.02;
 
-    private static final double TRACKING_KP = 0.02;
     private static final Pose GOAL_1 = new Pose(58, 54.67, 0);
     private static final Pose GOAL_2 = new Pose(58, 86.83, 0);
 
-    private TurretCommands() {
+    private static final double TURRET_OFFSET_FORWARD_IN = 97.40138 / 25.4;
+
+    // Turret 0 deg points to the RIGHT of the robot (-90 deg relative to robot forward)
+    private static final double TURRET_ZERO_OFFSET_DEG = -90.0;
+
+    private TurretCommands() { }
+
+    private static Pose getTurretFieldPose(Pose robotPose) {
+        double h = robotPose.heading();
+        double turretX = robotPose.x() + TURRET_OFFSET_FORWARD_IN * Math.cos(h);
+        double turretY = robotPose.y() + TURRET_OFFSET_FORWARD_IN * Math.sin(h);
+        return new Pose(turretX, turretY, h + Math.toRadians(TURRET_ZERO_OFFSET_DEG));
     }
 
     /**
@@ -44,6 +54,7 @@ public final class TurretCommands {
     }
 
     /**
+     * Continuously rotates the turret to a dynamically changing target angle in degrees.
      *
      * @param turret              turret subsystem instance
      * @param targetAngleSupplier continuously changing target heading supplier
@@ -63,19 +74,18 @@ public final class TurretCommands {
     /**
      * Continuously aims the turret at a fixed field coordinate (targetX, targetY).
      *
-     * @param turret  turret subsystem instance
+     * @param turret   turret subsystem instance
      * @param follower Pedro Pathing Follower instance for live robot pose
-     * @param targetX target X coordinate on the field (inches)
-     * @param targetY target Y coordinate on the field (inches)
+     * @param targetX  target X coordinate on the field (inches)
+     * @param targetY  target Y coordinate on the field (inches)
      * @return Ivy command
      */
     public static Command turnToPoint(Turret turret, Follower follower, double targetX, double targetY) {
         return turnToDynamicAngleClipped(turret, () -> {
-            Pose pose = follower.pose();
+            Pose pose = getTurretFieldPose(follower.pose());
             double dx = targetX - pose.x();
             double dy = targetY - pose.y();
             double fieldAngleRad = Math.atan2(dy, dx);
-
             double relativeRad = fieldAngleRad - pose.heading();
             return Math.toDegrees(Math.atan2(Math.sin(relativeRad), Math.cos(relativeRad)));
         });
@@ -90,7 +100,7 @@ public final class TurretCommands {
      */
     public static Command turnToClosestGoal(Turret turret, Follower follower) {
         return turnToDynamicAngleClipped(turret, () -> {
-            Pose pose = follower.pose();
+            Pose pose = getTurretFieldPose(follower.pose());
 
             double dx1 = GOAL_1.x() - pose.x();
             double dy1 = GOAL_1.y() - pose.y();
@@ -111,6 +121,7 @@ public final class TurretCommands {
 
     /**
      * Sets the turret power once
+     *
      * @param turret turret subsystem instance
      * @param power  power value
      * @return Ivy command
