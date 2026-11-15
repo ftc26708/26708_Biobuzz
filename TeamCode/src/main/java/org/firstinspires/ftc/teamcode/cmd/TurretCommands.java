@@ -119,29 +119,4 @@ public final class TurretCommands {
         return instant(() -> turret.setPower(power))
                 .requiring(turret);
     }
-
-    /**
-     * Continuously auto-aims the turret using Limelight vision data.
-     *
-     * @param turret turret subsystem instance
-     * @param vision vision subsystem instance
-     * @return Ivy command
-     */
-    /*public static Command trackTarget(Turret turret, VisionSubsystem vision) {
-        return Command.build()
-                .setExecute(() -> {
-                    if (vision.hasTarget()) {
-                        double bearingError = vision.getTargetBearing();
-                        double power = Range.clip(TRACKING_KP * bearingError, -0.8, 0.8);
-                        turret.setPower(power);
-                    } else {
-                        turret.stop();
-                    }
-                })
-                .setDone(() -> false)
-                .setEnd(interrupted -> turret.stop())
-                .requiring(turret);
-    }
-
-*/
 }
