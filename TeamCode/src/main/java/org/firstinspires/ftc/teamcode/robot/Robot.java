@@ -5,11 +5,11 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.subsys.Drivetrain;
-import org.firstinspires.ftc.teamcode.subsys.Shooter;
-import org.firstinspires.ftc.teamcode.subsys.Turret;
 import org.firstinspires.ftc.teamcode.subsys.Flower;
 import org.firstinspires.ftc.teamcode.subsys.Intake;
+import org.firstinspires.ftc.teamcode.subsys.Shooter;
 import org.firstinspires.ftc.teamcode.subsys.Transfer;
+import org.firstinspires.ftc.teamcode.subsys.Turret;
 
 /**
  * Composes and owns the robot's subsystems.
@@ -26,76 +26,32 @@ public class Robot {
     public final Flower flower;
 
     /**
-     * Creates the robot using the drivetrain's default localization behavior.
+     * Master constructor: all other overloads chain into this one.
+     *
+     * @param hardwareMap FTC hardware map used to initialize robot hardware
+     * @param startPose   initial field pose of the robot, or null for continued localization from previous OpMode
+     */
+    public Robot(HardwareMap hardwareMap, Pose startPose) {
+        drivetrain = (startPose != null)
+                ? new Drivetrain(hardwareMap, startPose)
+                : new Drivetrain(hardwareMap);
+
+        intake = new Intake(hardwareMap, "intake", "frontDeployer", "backDeployer",
+                DcMotorEx.Direction.FORWARD, 0.35, 0.54, 0.41, 0.67);
+        transfer = new Transfer(hardwareMap, "transfer", "blocker",
+                DcMotorEx.Direction.REVERSE, 0.5, 0.0);
+        flower = new Flower(hardwareMap, "flower", 0.25, 0.6);
+        turret = new Turret(hardwareMap, "turret", DcMotorEx.Direction.REVERSE);
+        shooter = new Shooter(hardwareMap, "shooter", "hood", DcMotorEx.Direction.REVERSE, 0.0);
+    }
+
+    /**
+     * Creates the robot using the drivetrain's continued localization from previous OpMode.
      *
      * @param hardwareMap FTC hardware map used to initialize robot hardware
      */
     public Robot(HardwareMap hardwareMap) {
-        drivetrain = new Drivetrain(hardwareMap);
-        intake = new Intake(hardwareMap,
-                "intake",
-                "frontDeployer",
-                "backDeployer",
-                DcMotorEx.Direction.FORWARD,
-                0.35,
-                0.54,
-                0.41,
-                0.67);
-        transfer = new Transfer(hardwareMap,
-                "transfer",
-                "blocker",
-                DcMotorEx.Direction.REVERSE,
-                0.5,
-                0.0);
-        flower = new Flower(hardwareMap,
-                "flower",
-                0.25,
-                0.6);
-        turret = new Turret(hardwareMap,
-                "turret",
-                DcMotorEx.Direction.REVERSE);
-        shooter = new Shooter(hardwareMap,
-                "shooter",
-                "hood",
-                DcMotorEx.Direction.REVERSE,
-                0.0);
-    }
-
-    /**
-     * Creates the robot with an explicit drivetrain starting pose.
-     *
-     * @param hardwareMap FTC hardware map used to initialize robot hardware
-     * @param startPose initial field pose of the robot
-     */
-    public Robot(HardwareMap hardwareMap, Pose startPose) {
-        drivetrain = new Drivetrain(hardwareMap, startPose);
-        intake = new Intake(hardwareMap,
-                "intake",
-                "frontDeployer",
-                "backDeployer",
-                DcMotorEx.Direction.REVERSE,
-                0.37,
-                0.67,
-                0.37,
-                0.67);
-        transfer = new Transfer(hardwareMap,
-                "transfer",
-                "blocker",
-                DcMotorEx.Direction.REVERSE,
-                0.4,
-                0.6);
-        flower = new Flower(hardwareMap,
-                "flower",
-                0.4,
-                0.6);
-        turret = new Turret(hardwareMap,
-                "turret",
-                DcMotorEx.Direction.REVERSE);
-        shooter = new Shooter(hardwareMap,
-                "shooter",
-                "hood",
-                DcMotorEx.Direction.REVERSE,
-                0.0);
+        this(hardwareMap, null);
     }
 
     /**
