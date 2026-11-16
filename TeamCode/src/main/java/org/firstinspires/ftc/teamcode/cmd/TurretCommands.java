@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.cmd;
 
 import static com.pedropathing.ivy.commands.Commands.infinite;
-import static com.pedropathing.ivy.commands.Commands.instant;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.ivy.Command;
@@ -26,7 +25,7 @@ public final class TurretCommands {
     }
 
     /**
-     * Rotates the turret to a target angle in degrees using proportional control.
+     * Rotates the turret to a static target angle in degrees using proportional control.
      *
      * @param turret         turret subsystem instance
      * @param targetAngleDeg target heading in degrees
@@ -44,6 +43,7 @@ public final class TurretCommands {
     }
 
     /**
+     * Rotates the turret to a changing target angle in degrees using proportional control.
      *
      * @param turret              turret subsystem instance
      * @param targetAngleSupplier continuously changing target heading supplier
@@ -107,16 +107,5 @@ public final class TurretCommands {
             double relativeRad = fieldAngleRad - pose.heading();
             return Math.toDegrees(Math.atan2(Math.sin(relativeRad), Math.cos(relativeRad)));
         });
-    }
-
-    /**
-     * Sets the turret power once
-     * @param turret turret subsystem instance
-     * @param power  power value
-     * @return Ivy command
-     */
-    public static Command setPower(Turret turret, double power) {
-        return instant(() -> turret.setPower(power))
-                .requiring(turret);
     }
 }

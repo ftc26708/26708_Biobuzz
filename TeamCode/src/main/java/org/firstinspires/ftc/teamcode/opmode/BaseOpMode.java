@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
 import static com.pedropathing.ivy.commands.Commands.*;
+
+import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.Scheduler;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -114,4 +116,17 @@ public class BaseOpMode extends OpMode {
      * Called once on stop.
      */
     protected void onStop() {}
+
+    protected Command stopMechanisms() {
+        return instant(() -> {
+            robot.intake.intake(0.0);
+            robot.intake.setDeploymentFront(false);
+            robot.intake.setDeploymentBack(false);
+            robot.transfer.transfer(0.0);
+            robot.transfer.setBlocker(false);
+            robot.turret.setPower(0.0);
+            robot.shooter.setTargetRPM(0.0);
+            robot.flower.setDeployment(false);
+        }).requiring(robot.intake, robot.transfer, robot.turret, robot.shooter, robot.flower);
+    }
 }

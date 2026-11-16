@@ -16,8 +16,6 @@ public class Turret {
         this.turretMotor = hardwareMap.get(DcMotorEx.class, motorName);
         this.turretMotor.setDirection(direction);
         this.turretMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        this.turretMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        this.turretMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void setDirection(DcMotorEx.Direction direction) {
@@ -55,8 +53,7 @@ public class Turret {
      * Resets turret encoder to zero.
      */
     public void resetEncoder() {
-        DcMotorEx.RunMode currentMode = turretMotor.getMode();
-        turretMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        turretMotor.setMode(currentMode);
+        this.turretMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        this.turretMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
     }
 }
