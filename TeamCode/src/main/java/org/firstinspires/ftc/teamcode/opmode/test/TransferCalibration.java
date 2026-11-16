@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmode.test;
 
 import com.pedropathing.follower.ManualDrive;
+import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.opmode.BaseOpMode;
@@ -37,8 +38,8 @@ public class TransferCalibration extends BaseOpMode {
         robot.drivetrain.follower.manual(
                 ManualDrive.fieldCentric(
                         -gamepad1.left_stick_y,
-                        gamepad1.left_stick_x,
-                        gamepad1.right_stick_x,
+                        -gamepad1.left_stick_x,
+                        -gamepad1.right_stick_x,
                         robot.drivetrain.follower.pose().heading()
                 )
         );
@@ -109,5 +110,10 @@ public class TransferCalibration extends BaseOpMode {
 
     private double clip(double position) {
         return Math.max(0.0, Math.min(1.0, position));
+    }
+
+    @Override
+    public Robot createRobot()  {
+        return new Robot(hardwareMap, new Pose(70.75, 70.75, Math.toDegrees(90)));
     }
 }

@@ -35,8 +35,8 @@ public class IntakeCalibration extends BaseOpMode {
         robot.drivetrain.follower.manual(
                 ManualDrive.fieldCentric(
                         -gamepad1.left_stick_y,
-                        gamepad1.left_stick_x,
-                        gamepad1.right_stick_x,
+                        -gamepad1.left_stick_x,
+                        -gamepad1.right_stick_x,
                         robot.drivetrain.follower.pose().heading()
                 )
         );
@@ -158,5 +158,10 @@ public class IntakeCalibration extends BaseOpMode {
 
     private double clip(double position) {
         return Math.max(0, Math.min(1, position));
+    }
+
+    @Override
+    public Robot createRobot()  {
+        return new Robot(hardwareMap, new Pose(70.75, 70.75, Math.toDegrees(90)));
     }
 }

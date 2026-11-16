@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.cmd.TurretCommands;
 import org.firstinspires.ftc.teamcode.opmode.BaseOpMode;
+import org.firstinspires.ftc.teamcode.robot.Robot;
 
 @TeleOp(name = "Turret Calibration")
 public class TurretCalibration extends BaseOpMode {
@@ -124,8 +125,8 @@ public class TurretCalibration extends BaseOpMode {
                 robot.drivetrain.follower.manual(
                         ManualDrive.fieldCentric(
                                 -gamepad1.left_stick_y,
-                                gamepad1.left_stick_x,
-                                gamepad1.right_stick_x,
+                                -gamepad1.left_stick_x,
+                                -gamepad1.right_stick_x,
                                 robot.drivetrain.follower.pose().heading()
                         )
                 );
@@ -190,5 +191,10 @@ public class TurretCalibration extends BaseOpMode {
     public void onStop() {
         currentStep = CalibrationStep.STEP_1_DIRECTION;
         robot.turret.setPower(0);
+    }
+
+    @Override
+    public Robot createRobot()  {
+        return new Robot(hardwareMap, new Pose(70.75, 70.75, Math.toDegrees(90)));
     }
 }
