@@ -64,7 +64,9 @@ public class BaseOpMode extends OpMode {
     @Override
     public final void stop() {
         clearBulkCache();
+        Scheduler.schedule(stopMechanisms());
         onStop();
+        Scheduler.execute();
     }
 
     /**
