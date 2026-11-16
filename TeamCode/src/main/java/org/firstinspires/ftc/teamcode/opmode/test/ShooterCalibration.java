@@ -33,13 +33,9 @@ public class ShooterCalibration extends BaseOpMode {
         turretTrackCommand = TurretCommands.turnToClosestGoal(robot.turret, robot.drivetrain.follower)
                 .until(() -> !tuningShot);
 
-        // =========================================================================
-        // UNCOMMENT WITH CTRL + / ONCE INTAKE & TRANSFER ARE MERGED INTO THIS BRANCH
-        // =========================================================================
-        // robot.intake.setDeploymentFront(true);
-        // robot.intake.setDeploymentBack(true);
-        // robot.transfer.setBlocker(true);
-        // =========================================================================
+         robot.intake.setDeploymentFront(true);
+         robot.intake.setDeploymentBack(true);
+         robot.transfer.setBlocker(true);
     }
 
     @Override
@@ -59,8 +55,8 @@ public class ShooterCalibration extends BaseOpMode {
                 flywheelOn = false;
                 robot.shooter.setTargetRPM(0.0);
                 robot.shooter.setHoodPosition(robot.shooter.hoodBasePosition);
-                // robot.intake.intake(0.0);
-                // robot.transfer.transfer(0.0);
+                robot.intake.intake(0.0);
+                robot.transfer.transfer(0.0);
             }
         }
 
@@ -103,16 +99,12 @@ public class ShooterCalibration extends BaseOpMode {
             robot.shooter.setHoodPosition(shotHoodPos);
             robot.shooter.setTargetRPM(flywheelOn ? targetRPM : 0.0);
 
-            // =========================================================================
-            // UNCOMMENT WITH CTRL + / ONCE INTAKE & TRANSFER ARE MERGED INTO THIS BRANCH
-            // =========================================================================
-            // robot.intake.setDeploymentFront(true);
-            // robot.intake.setDeploymentBack(true);
-            // robot.transfer.setBlocker(true);
-            // double feedPower = Math.max(gamepad1.right_trigger, gamepad2.right_trigger);
-            // robot.intake.intake(feedPower);
-            // robot.transfer.transfer(feedPower);
-            // =========================================================================
+            robot.intake.setDeploymentFront(true);
+            robot.intake.setDeploymentBack(true);
+            robot.transfer.setBlocker(true);
+            double feedPower = Math.max(gamepad1.right_trigger, gamepad2.right_trigger);
+            robot.intake.intake(feedPower);
+            robot.transfer.transfer(feedPower);
         }
 
         prevX = gamepad2.x;
@@ -153,7 +145,7 @@ public class ShooterCalibration extends BaseOpMode {
             telemetry.addLine("  [G2 Y] Toggle Flywheel ON/OFF | [G2 RS Btn] Flip Shooter Direction");
             telemetry.addLine("  [G2 D-Pad U/D] Hood +/- 0.005 | [G2 A/B] Hood +/- 0.025");
             telemetry.addLine("  [G2 D-Pad L/R] RPM +/- 50 | [G2 LB/RB] RPM +/- 250");
-            // telemetry.addLine("  [G1/G2 RT] Hold to Run Intake & Transfer");
+            telemetry.addLine("  [G1/G2 RT] Hold to Run Intake & Transfer");
         }
 
         telemetry.addLine("=== LIVE VALUES (RECORD THESE) ===");
@@ -178,8 +170,8 @@ public class ShooterCalibration extends BaseOpMode {
         tuningShot = false;
         robot.shooter.setTargetRPM(0.0);
         robot.turret.setPower(0.0);
-        // robot.intake.intake(0.0);
-        // robot.transfer.transfer(0.0);
-        // robot.transfer.setBlocker(false);
+        robot.intake.intake(0.0);
+        robot.transfer.transfer(0.0);
+        robot.transfer.setBlocker(false);
     }
 }
