@@ -122,8 +122,8 @@ public class BaseOpMode extends OpMode {
     protected Command stopMechanisms() {
         return instant(() -> {
             robot.intake.intake(0.0);
-            robot.intake.setDeploymentFront(false);
-            robot.intake.setDeploymentBack(false);
+            robot.intake.frontDeployer.setPosition(0.56);
+            robot.intake.backDeployer.setPosition(0.71);
             robot.transfer.transfer(0.0);
             robot.transfer.setBlocker(false);
             robot.turret.setPower(0.0);

@@ -37,7 +37,7 @@ public class Robot {
                 : new Drivetrain(hardwareMap);
 
         intake = new Intake(hardwareMap, "intake", "frontDeployer", "backDeployer",
-                DcMotorEx.Direction.FORWARD, 0.35, 0.54, 0.41, 0.67);
+                DcMotorEx.Direction.FORWARD, 0.36, 0.51, 0.46, 0.61);
         transfer = new Transfer(hardwareMap, "transfer", "blocker",
                 DcMotorEx.Direction.REVERSE, 0.5, 0.0);
         flower = new Flower(hardwareMap, "flower", 0.25, 0.6);
