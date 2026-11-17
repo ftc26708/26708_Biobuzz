@@ -87,12 +87,10 @@ public class Teleop extends BaseOpMode {
         // ---------------- INTAKE / SHOOT ----------------
 
         boolean intakeButton =
-                gamepad1.left_trigger > 0.1 ||
-                        gamepad2.left_trigger > 0.1;
+                gamepad1.left_trigger > 0.1;
 
         boolean shootButton =
-                gamepad1.right_trigger > 0.1 ||
-                        gamepad2.right_trigger > 0.1;
+                gamepad1.right_trigger > 0.1;
 
         if (shootButton) {
             robot.intake.setDeploymentFront(false);
@@ -115,7 +113,7 @@ public class Teleop extends BaseOpMode {
 
         // ---------------- FLOWER ----------------
 
-        boolean flowerButton = gamepad1.left_bumper || gamepad2.left_bumper;
+        boolean flowerButton = gamepad1.left_bumper;
 
         if (flowerButton && !previousFlowerButton) {
             flowerUp = !flowerUp;
@@ -125,7 +123,7 @@ public class Teleop extends BaseOpMode {
 
         // ---------------- TURRET ----------------
 
-        boolean turretButton = gamepad1.right_bumper || gamepad2.right_bumper;
+        boolean turretButton = gamepad1.right_bumper;
 
         if (turretButton && !previousTurretButton) {
             holdTurretRight = !holdTurretRight;
@@ -138,8 +136,8 @@ public class Teleop extends BaseOpMode {
 
         // ---------------- SHOOTER RPM ----------------
 
-        boolean dpadUp = gamepad1.dpad_up || gamepad2.dpad_up;
-        boolean dpadDown = gamepad1.dpad_down || gamepad2.dpad_down;
+        boolean dpadUp = gamepad1.dpad_up;
+        boolean dpadDown = gamepad1.dpad_down;
 
         if (dpadUp && !previousDpadUp) {
             targetRPM = Math.min(MAX_RPM, targetRPM + RPM_ADJUSTMENT);
