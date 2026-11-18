@@ -10,19 +10,19 @@ public class Flower {
 
     public Flower(HardwareMap hardwareMap,
                   String flowerName,
-                  double openPos,
-                  double closedPos) {
+                  double upPos,
+                  double downPos) {
         this.flower = hardwareMap.get(Servo.class, flowerName);
-        this.upPos = openPos;
-        this.downPos = closedPos;
+        this.upPos = upPos;
+        this.downPos = downPos;
     }
 
-    public void setPositions(double openPos, double closedPos) {
-        this.upPos = openPos;
-        this.downPos = closedPos;
+    public void setPositions(double upPos, double downPos) {
+        this.upPos = upPos;
+        this.downPos = downPos;
     }
 
-    public void setDeployment(boolean up) {
-        flower.setPosition(up ? upPos : downPos);
+    public void setDeployment(boolean down) {
+        flower.setPosition(down ? downPos : upPos);
     }
 }
