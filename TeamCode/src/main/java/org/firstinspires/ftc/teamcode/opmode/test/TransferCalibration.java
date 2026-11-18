@@ -28,7 +28,7 @@ public class TransferCalibration extends BaseOpMode {
         robot.intake.setDeploymentBack(intakesDeployed);
 
         robot.transfer.setPositions(openPos, closedPos);
-        robot.transfer.setBlocker(blockerOpen);
+        robot.transfer.setBlockerOpen(blockerOpen);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class TransferCalibration extends BaseOpMode {
         // Toggle blocker open/closed
         if (gamepad1.left_stick_button && !prevBlockerToggle) {
             blockerOpen = !blockerOpen;
-            robot.transfer.setBlocker(blockerOpen);
+            robot.transfer.setBlockerOpen(blockerOpen);
         }
         prevBlockerToggle = gamepad1.left_stick_button;
 
@@ -89,7 +89,7 @@ public class TransferCalibration extends BaseOpMode {
                 closedPos = clip(closedPos + adjustment);
             }
             robot.transfer.setPositions(openPos, closedPos);
-            robot.transfer.setBlocker(blockerOpen);
+            robot.transfer.setBlockerOpen(blockerOpen);
         }
         prevUp = gamepad1.dpad_up;
         prevDown = gamepad1.dpad_down;

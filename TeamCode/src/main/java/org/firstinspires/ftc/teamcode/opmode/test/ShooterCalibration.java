@@ -35,7 +35,7 @@ public class ShooterCalibration extends BaseOpMode {
 
          robot.intake.setDeploymentFront(true);
          robot.intake.setDeploymentBack(true);
-         robot.transfer.setBlocker(true);
+         robot.transfer.setBlockerOpen(true);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class ShooterCalibration extends BaseOpMode {
 
             robot.intake.setDeploymentFront(true);
             robot.intake.setDeploymentBack(true);
-            robot.transfer.setBlocker(true);
+            robot.transfer.setBlockerOpen(true);
             double feedPower = Math.max(gamepad1.right_trigger, gamepad2.right_trigger);
             robot.intake.intake(feedPower);
             robot.transfer.transfer(feedPower);
@@ -172,6 +172,6 @@ public class ShooterCalibration extends BaseOpMode {
         robot.turret.setPower(0.0);
         robot.intake.intake(0.0);
         robot.transfer.transfer(0.0);
-        robot.transfer.setBlocker(false);
+        robot.transfer.setBlockerOpen(false);
     }
 }

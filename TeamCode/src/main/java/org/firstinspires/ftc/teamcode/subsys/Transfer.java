@@ -36,7 +36,7 @@ public class Transfer {
         transfer.setPower(power);
     }
 
-    public void setBlocker(boolean open) {
+    public void setBlockerOpen(boolean open) {
         blocker.setPosition(open ? openPos : closedPos);
     }
 }

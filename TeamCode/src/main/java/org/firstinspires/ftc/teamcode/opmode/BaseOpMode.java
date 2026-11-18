@@ -125,7 +125,7 @@ public class BaseOpMode extends OpMode {
             robot.intake.frontDeployer.setPosition(0.56);
             robot.intake.backDeployer.setPosition(0.71);
             robot.transfer.transfer(0.0);
-            robot.transfer.setBlocker(false);
+            robot.transfer.setBlockerOpen(false);
             robot.turret.setPower(0.0);
             robot.shooter.setTargetRPM(0.0);
             robot.flower.setDeployment(false);

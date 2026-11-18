@@ -98,14 +98,14 @@ public class Teleop extends BaseOpMode {
             robot.intake.intake(1.0);
 
             robot.transfer.transfer(1.0);
-            robot.transfer.setBlocker(true);
+            robot.transfer.setBlockerOpen(true);
         } else if (intakeButton) {
             robot.intake.setDeploymentFront(true);
             robot.intake.setDeploymentBack(true);
             robot.intake.intake(1.0);
 
             robot.transfer.transfer(1.0);
-            robot.transfer.setBlocker(false);
+            robot.transfer.setBlockerOpen(false);
         } else {
             robot.intake.intake(0.0);
             robot.transfer.transfer(0.0);
