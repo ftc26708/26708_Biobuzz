@@ -1,30 +1,36 @@
-
 package org.firstinspires.ftc.teamcode.opmode.teleop;
 
+import com.pedropathing.api.PoseFactory;
 import com.pedropathing.drivetrain.DrivePowers;
 import com.pedropathing.follower.ManualDrive;
+import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.Scheduler;
 import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.cmd.ControlCommands;
 import org.firstinspires.ftc.teamcode.cmd.TurretCommands;
 import org.firstinspires.ftc.teamcode.opmode.BaseOpMode;
 
-@TeleOp(name = "TeleOp", group = "Competition")
+@TeleOp(name = "TeleOp")
 public class Teleop extends BaseOpMode {
 
     private static final double STARTING_RPM = 3500.0;
     private static final double RPM_ADJUSTMENT = 100.0;
     private static final double MAX_RPM = 6000.0;
     private static final double MIN_RPM = 0.0;
+    private static final double INTAKE_SPEED_THRESHOLD = 3.0;
 
-    private static final Pose RELOC_POSE =
-            com.pedropathing.api.PoseFactory.degrees().of(7.2, 70.75, 90);
+    private static final Pose RELOC_POSE = PoseFactory.degrees().of(7.2, 70.75, 90);
+
+    private enum ControlState {
+        PAUSED, FRONT, BACK, FLOWER, TRANSFER
+    }
 
     private double targetRPM = STARTING_RPM;
 
-    private boolean flowerUp = false;
-    private boolean holdTurretRight = false;
+    private boolean flowerDown = false;
+    private boolean zeroTurret = false;
 
     private boolean previousFlowerButton = false;
     private boolean previousTurretButton = false;
@@ -32,42 +38,31 @@ public class Teleop extends BaseOpMode {
     private boolean previousDpadDown = false;
     private boolean previousRelocalize = false;
 
-    private com.pedropathing.ivy.Command closestGoalCommand;
-    private com.pedropathing.ivy.Command holdRightCommand;
+    private ControlState controlState = null;
+
+    private Command closestGoalCommand;
+    private Command zeroTurretCommand;
 
     @Override
     protected void onInit() {
-        robot.flower.setDeployment(false);
+        closestGoalCommand = TurretCommands
+                .turnToClosestGoal(robot.turret, robot.drivetrain.follower)
+                .until(() -> zeroTurret);
 
-        closestGoalCommand =
-                TurretCommands.turnToClosestGoal(
-                        robot.turret,
-                        robot.drivetrain.follower
-                ).until(() -> holdTurretRight);
-
-        holdRightCommand =
-                TurretCommands.turnToStaticAngleClipped(
-                        robot.turret,
-                        0.0
-                ).until(() -> !holdTurretRight);
-
-        telemetry.addLine("TeleOp initialized");
-        telemetry.addLine("Turret zero = straight right");
-        telemetry.update();
+        zeroTurretCommand = TurretCommands
+                .turnToStaticAngleClipped(robot.turret, 0.0)
+                .until(() -> !zeroTurret);
     }
 
     @Override
     protected void onStart() {
-        targetRPM = STARTING_RPM;
         robot.shooter.setTargetRPM(targetRPM);
-
         Scheduler.schedule(closestGoalCommand);
     }
 
     @Override
     protected void onLoop() {
-        // ---------------- DRIVE ----------------
-
+        // Drive
         DrivePowers drivePowers = ManualDrive.fieldCentric(
                 -gamepad1.left_stick_y,
                 gamepad1.left_stick_x,
@@ -77,74 +72,74 @@ public class Teleop extends BaseOpMode {
 
         robot.drivetrain.follower.manual(drivePowers);
 
-        // Relocalize to the known reference pose.
+        // Relocalize
         boolean relocalize = gamepad1.y;
         if (relocalize && !previousRelocalize) {
             robot.drivetrain.follower.setPose(RELOC_POSE);
         }
         previousRelocalize = relocalize;
 
-        // ---------------- INTAKE / SHOOT ----------------
+        // Intake direction selection
+        boolean intake = gamepad1.left_trigger > 0.1;
+        double forwardVelocity = robot.drivetrain.follower.twist().vx;
 
-        boolean intakeButton =
-                gamepad1.left_trigger > 0.1;
-
-        boolean shootButton =
-                gamepad1.right_trigger > 0.1;
-
-        if (shootButton) {
-            robot.intake.setDeploymentFront(false);
-            robot.intake.setDeploymentBack(false);
-            robot.intake.intake(1.0);
-
-            robot.transfer.transfer(1.0);
-            robot.transfer.setBlockerOpen(true);
-        } else if (intakeButton) {
-            robot.intake.setDeploymentFront(true);
-            robot.intake.setDeploymentBack(true);
-            robot.intake.intake(1.0);
-
-            robot.transfer.transfer(1.0);
-            robot.transfer.setBlockerOpen(false);
-        } else {
-            robot.intake.intake(0.0);
-            robot.transfer.transfer(0.0);
-        }
-
-        // ---------------- FLOWER ----------------
-
+        // Flower toggle
         boolean flowerButton = gamepad1.left_bumper;
-
         if (flowerButton && !previousFlowerButton) {
-            flowerUp = !flowerUp;
-            robot.flower.setDeployment(flowerUp);
+            flowerDown = !flowerDown;
         }
         previousFlowerButton = flowerButton;
 
-        // ---------------- TURRET ----------------
+        // Control state
+        ControlState requestedState;
 
+        if (gamepad1.right_trigger > 0.1) {
+            requestedState = ControlState.TRANSFER;
+            flowerDown = false;
+        } else if (flowerDown) {
+            requestedState = ControlState.FLOWER;
+        } else if (intake) {
+            if (controlState == ControlState.FRONT) {
+                requestedState = forwardVelocity <= -INTAKE_SPEED_THRESHOLD
+                        ? ControlState.BACK : ControlState.FRONT;
+            } else if (controlState == ControlState.BACK) {
+                requestedState = forwardVelocity >= INTAKE_SPEED_THRESHOLD
+                        ? ControlState.FRONT : ControlState.BACK;
+            } else if (forwardVelocity >= INTAKE_SPEED_THRESHOLD) {
+                requestedState = ControlState.FRONT;
+            } else if (forwardVelocity <= -INTAKE_SPEED_THRESHOLD) {
+                requestedState = ControlState.BACK;
+            } else {
+                requestedState = ControlState.PAUSED;
+            }
+        } else {
+            requestedState = ControlState.PAUSED;
+        }
+
+        if (controlState != null || intake || flowerDown || gamepad1.right_trigger > 0.1) {
+            setControlState(requestedState);
+        }
+
+        // Turret toggle
         boolean turretButton = gamepad1.right_bumper;
-
         if (turretButton && !previousTurretButton) {
-            holdTurretRight = !holdTurretRight;
-
+            zeroTurret = !zeroTurret;
             Scheduler.schedule(
-                    holdTurretRight ? holdRightCommand : closestGoalCommand
+                    zeroTurret ? zeroTurretCommand : closestGoalCommand
             );
         }
         previousTurretButton = turretButton;
 
-        // ---------------- SHOOTER RPM ----------------
-
+        // Shooter RPM adjustment
         boolean dpadUp = gamepad1.dpad_up;
         boolean dpadDown = gamepad1.dpad_down;
 
         if (dpadUp && !previousDpadUp) {
-            targetRPM = Math.min(MAX_RPM, targetRPM + RPM_ADJUSTMENT);
+            targetRPM = Math.min(targetRPM + RPM_ADJUSTMENT, MAX_RPM);
         }
 
         if (dpadDown && !previousDpadDown) {
-            targetRPM = Math.max(MIN_RPM, targetRPM - RPM_ADJUSTMENT);
+            targetRPM = Math.max(targetRPM - RPM_ADJUSTMENT, MIN_RPM);
         }
 
         previousDpadUp = dpadUp;
@@ -152,22 +147,49 @@ public class Teleop extends BaseOpMode {
 
         robot.shooter.setTargetRPM(targetRPM);
 
-        // ---------------- TELEMETRY ----------------
-
-        Pose currentPose = robot.drivetrain.follower.pose();
-
-        telemetry.addData("X", "%.2f", currentPose.x());
-        telemetry.addData("Y", "%.2f", currentPose.y());
-        telemetry.addData("Heading", "%.1f°",
-                Math.toDegrees(currentPose.heading()));
-
-        telemetry.addData("Shooter Target", "%.0f RPM", targetRPM);
+        // Telemetry
+        telemetry.addData("Forward Velocity", "%.2f in/s", forwardVelocity);
+        telemetry.addData("Control State", controlState);
+        telemetry.addData("Target RPM", targetRPM);
         telemetry.addData("Turret Mode",
-                holdTurretRight ? "Fixed right (0°)" : "Closest goal");
-        telemetry.addData("Turret Heading", "%.1f°",
-                robot.turret.getHeading());
-        telemetry.addData("Flower", flowerUp ? "Up" : "Down");
-
+                zeroTurret ? "Fixed Right" : "Tracking Goal");
+        telemetry.addData("Turret Heading", robot.turret.getHeading());
+        telemetry.addData("Flower", flowerDown);
         telemetry.update();
+    }
+
+    private void setControlState(ControlState state) {
+        if (state == controlState) {
+            return;
+        }
+
+        controlState = state;
+
+        switch (state) {
+            case PAUSED:
+                Scheduler.schedule(ControlCommands.intakePause(
+                        robot.intake, robot.transfer, robot.flower));
+                break;
+
+            case FRONT:
+                Scheduler.schedule(ControlCommands.intakeFront(
+                        robot.intake, robot.transfer, robot.flower));
+                break;
+
+            case BACK:
+                Scheduler.schedule(ControlCommands.intakeBack(
+                        robot.intake, robot.transfer, robot.flower));
+                break;
+
+            case FLOWER:
+                Scheduler.schedule(ControlCommands.intakeFlower(
+                        robot.intake, robot.transfer, robot.flower));
+                break;
+
+            case TRANSFER:
+                Scheduler.schedule(ControlCommands.transfer(
+                        robot.intake, robot.transfer, robot.flower));
+                break;
+        }
     }
 }

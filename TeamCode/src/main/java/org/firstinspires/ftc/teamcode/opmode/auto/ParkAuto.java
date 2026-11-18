@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.opmode.BaseOpMode;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
-@Autonomous(name = "ParkAuto", group = "Auto")
+@Autonomous(name = "ParkAuto")
 public class ParkAuto extends BaseOpMode {
 
     private static final PoseFactory poseFactory = PoseFactory.degrees();

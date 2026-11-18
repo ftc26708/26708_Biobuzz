@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
 import static com.pedropathing.ivy.commands.Commands.*;
+import static com.pedropathing.ivy.groups.Groups.parallel;
 
 import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.Scheduler;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.cmd.ControlCommands;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
 import java.util.List;
@@ -120,15 +122,12 @@ public class BaseOpMode extends OpMode {
     protected void onStop() {}
 
     protected Command stopMechanisms() {
-        return instant(() -> {
-            robot.intake.intake(0.0);
-            robot.intake.frontDeployer.setPosition(0.56);
-            robot.intake.backDeployer.setPosition(0.71);
-            robot.transfer.transfer(0.0);
-            robot.transfer.setBlockerOpen(false);
-            robot.turret.setPower(0.0);
-            robot.shooter.setTargetRPM(0.0);
-            robot.flower.setDeployment(false);
-        }).requiring(robot.intake, robot.transfer, robot.turret, robot.shooter, robot.flower);
+        return parallel(
+                ControlCommands.intakeStop(robot.intake, robot.transfer, robot.flower),
+                instant(() -> {
+                    robot.turret.setPower(0.0);
+                    robot.shooter.setTargetRPM(0.0);
+                }).requiring(robot.intake, robot.transfer, robot.turret, robot.shooter, robot.flower)
+        );
     }
 }

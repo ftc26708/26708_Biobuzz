@@ -60,8 +60,8 @@ public class ControlCommands {
         return instant(() -> {
             intake.setDeploymentFront(false);
             intake.setDeploymentBack(false);
-            intake.intake(1);
-            transfer.transfer(1);
+            intake.intake(0);
+            transfer.transfer(0);
             transfer.setBlockerOpen(false);
             flower.setDeployment(false);
         }).requiring(intake, transfer, flower);
