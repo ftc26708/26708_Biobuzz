@@ -8,6 +8,7 @@ import com.pedropathing.api.Paths;
 import com.pedropathing.api.PoseFactory;
 import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
+import com.pedropathing.paths.interpolator.Interpolator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.opmode.BaseOpMode;
@@ -30,7 +31,7 @@ public class ParkAuto extends BaseOpMode {
 
     @Override
     protected void onInit() {
-        parkPath = Paths.line(START, PARK_POSE);
+        parkPath = Paths.line(START, PARK_POSE).heading(Interpolator.constant(START.heading()));
         schedule(stopMechanisms());
     }
 
