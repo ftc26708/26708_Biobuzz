@@ -99,17 +99,17 @@ public class Shooter {
      * @return hood angle from horizontal
      */
     public double positionToAngle(double position) {
-        return HOOD_BASE_ANGLE + (position - hoodBasePosition) * 100.0 * DEGREES_PER_HUNDREDTH;
+        return HOOD_BASE_ANGLE - (position - hoodBasePosition) * 100.0 * DEGREES_PER_HUNDREDTH;
     }
 
     /**
-     * Converts angle from horizontal to hood servo position .
+     * Converts angle from horizontal to hood servo position.
      *
-     * @param angle hood servo position [0.0, 1.0]
-     * @return hood angle from horizontal
+     * @param angle hood angle from horizontal
+     * @return hood servo position [0.0, 1.0]
      */
     public double angleToPosition(double angle) {
-        return (angle - HOOD_BASE_ANGLE) / 100.0 / DEGREES_PER_HUNDREDTH + hoodBasePosition;
+        return (HOOD_BASE_ANGLE - angle) / 100.0 / DEGREES_PER_HUNDREDTH + hoodBasePosition;
     }
 
     /**

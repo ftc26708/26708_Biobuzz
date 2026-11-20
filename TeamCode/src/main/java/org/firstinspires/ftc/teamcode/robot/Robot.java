@@ -42,7 +42,7 @@ public class Robot {
                 DcMotorEx.Direction.FORWARD, 0.5, 0.0);
         flower = new Flower(hardwareMap, "flower", 0.2, 0.6);
         turret = new Turret(hardwareMap, "turret", DcMotorEx.Direction.REVERSE);
-        shooter = new Shooter(hardwareMap, "shooter", "hood", DcMotorEx.Direction.REVERSE, 0.0);
+        shooter = new Shooter(hardwareMap, "shooter", "hood", DcMotorEx.Direction.FORWARD, 0.280);
     }
 
     /**
