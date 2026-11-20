@@ -15,8 +15,8 @@ import org.firstinspires.ftc.teamcode.opmode.BaseOpMode;
 @TeleOp(name = "TeleOp")
 public class Teleop extends BaseOpMode {
 
-    private static final double STARTING_RPM = 3500.0;
-    private static final double RPM_ADJUSTMENT = 100.0;
+    private static final double STARTING_RPM = 2150.0;
+    private static final double RPM_ADJUSTMENT = 25.0;
     private static final double MAX_RPM = 6000.0;
     private static final double MIN_RPM = 0.0;
     private static final double INTAKE_SPEED_THRESHOLD = 3.0;

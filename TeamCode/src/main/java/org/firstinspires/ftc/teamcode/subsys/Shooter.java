@@ -46,7 +46,6 @@ public class Shooter {
         this.shooter.setDirection(direction);
         this.shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         this.shooter.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        setHoodPosition(hoodBasePosition);
     }
 
     public void setDirection(DcMotorSimple.Direction direction) {
