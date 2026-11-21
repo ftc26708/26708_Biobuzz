@@ -29,7 +29,7 @@ public class OneTipAuto extends BaseOpMode {
     private static final Pose START = poseFactory.of(55.1, 8.1, 180);
     private static final Pose PARK_POSE = poseFactory.of(11.53, 88.89, 180);
 
-    private static final double SHOOT_RPM = 3500.0;
+    private static final double SHOOT_RPM = 2150.0;
     private static final double SPIN_UP_MS = 1000.0;
     private static final double SHOOT_TIME_MS = 2500.0;
 
