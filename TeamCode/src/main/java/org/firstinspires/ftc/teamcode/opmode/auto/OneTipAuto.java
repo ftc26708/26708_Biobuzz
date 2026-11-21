@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.cmd.TurretCommands;
 import org.firstinspires.ftc.teamcode.opmode.BaseOpMode;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
-@Autonomous(name = "ParkAuto")
+@Autonomous(name = "OneTipAuto")
 public class OneTipAuto extends BaseOpMode {
 
     private static final PoseFactory poseFactory = PoseFactory.degrees();
