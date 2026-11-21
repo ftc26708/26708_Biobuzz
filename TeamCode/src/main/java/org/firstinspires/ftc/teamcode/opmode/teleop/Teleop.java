@@ -15,11 +15,12 @@ import org.firstinspires.ftc.teamcode.opmode.BaseOpMode;
 @TeleOp(name = "TeleOp")
 public class Teleop extends BaseOpMode {
 
-    private static final double STARTING_RPM = 3500.0;
-    private static final double RPM_ADJUSTMENT = 100.0;
+    private static final double STARTING_RPM = 2150.0;
+    private static final double RPM_ADJUSTMENT = 25.0;
     private static final double MAX_RPM = 6000.0;
     private static final double MIN_RPM = 0.0;
-    private static final double INTAKE_SPEED_THRESHOLD = 3.0;
+    private static final double INITIAL_INTAKE_SPEED_THRESHOLD = 2;
+    private static final double SWITCH_INTAKE_SPEED_THRESHOLD = 10;
 
     private static final Pose RELOC_POSE = PoseFactory.degrees().of(7.2, 70.75, 90);
 
@@ -65,8 +66,8 @@ public class Teleop extends BaseOpMode {
         // Drive
         DrivePowers drivePowers = ManualDrive.fieldCentric(
                 -gamepad1.left_stick_y,
-                gamepad1.left_stick_x,
-                gamepad1.right_stick_x,
+                -gamepad1.left_stick_x,
+                -gamepad1.right_stick_x,
                 robot.drivetrain.follower.pose().heading()
         );
 
@@ -100,14 +101,14 @@ public class Teleop extends BaseOpMode {
             requestedState = ControlState.FLOWER;
         } else if (intake) {
             if (controlState == ControlState.FRONT) {
-                requestedState = forwardVelocity <= -INTAKE_SPEED_THRESHOLD
+                requestedState = forwardVelocity <= -SWITCH_INTAKE_SPEED_THRESHOLD
                         ? ControlState.BACK : ControlState.FRONT;
             } else if (controlState == ControlState.BACK) {
-                requestedState = forwardVelocity >= INTAKE_SPEED_THRESHOLD
+                requestedState = forwardVelocity >= SWITCH_INTAKE_SPEED_THRESHOLD
                         ? ControlState.FRONT : ControlState.BACK;
-            } else if (forwardVelocity >= INTAKE_SPEED_THRESHOLD) {
+            } else if (forwardVelocity >= INITIAL_INTAKE_SPEED_THRESHOLD) {
                 requestedState = ControlState.FRONT;
-            } else if (forwardVelocity <= -INTAKE_SPEED_THRESHOLD) {
+            } else if (forwardVelocity <= -INITIAL_INTAKE_SPEED_THRESHOLD) {
                 requestedState = ControlState.BACK;
             } else {
                 requestedState = ControlState.PAUSED;
