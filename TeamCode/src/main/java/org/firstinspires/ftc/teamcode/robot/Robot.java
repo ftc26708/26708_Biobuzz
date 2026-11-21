@@ -39,7 +39,7 @@ public class Robot {
         intake = new Intake(hardwareMap, "intake", "frontDeployer", "backDeployer",
                 DcMotorEx.Direction.FORWARD, 0.36, 0.51, 0.46, 0.61);
         transfer = new Transfer(hardwareMap, "transfer", "blocker",
-                DcMotorEx.Direction.FORWARD, 0.55, 0.7);
+                DcMotorEx.Direction.FORWARD, 0.55, 0.675);
         flower = new Flower(hardwareMap, "flower", 0.2, 0.6);
         turret = new Turret(hardwareMap, "turret", DcMotorEx.Direction.REVERSE);
         shooter = new Shooter(hardwareMap, "shooter", "hood", DcMotorEx.Direction.FORWARD, 0.280);

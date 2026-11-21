@@ -17,7 +17,7 @@ public class ControlCommands {
             intake.setDeploymentFront(true);
             intake.setDeploymentBack(false);
             intake.intake(1);
-            transfer.transfer(-0.5);
+            transfer.transfer(-0.75);
             transfer.setBlockerOpen(false);
             flower.setDeployment(false);
         }).requiring(intake, transfer, flower);
@@ -49,8 +49,8 @@ public class ControlCommands {
         return instant(() -> {
             intake.setDeploymentFront(false);
             intake.setDeploymentBack(false);
-            intake.intake(0.5);
-            transfer.transfer(0.5);
+            intake.intake(0.75);
+            transfer.transfer(0.75);
             transfer.setBlockerOpen(true);
             flower.setDeployment(false);
         }).requiring(intake, transfer, flower);
