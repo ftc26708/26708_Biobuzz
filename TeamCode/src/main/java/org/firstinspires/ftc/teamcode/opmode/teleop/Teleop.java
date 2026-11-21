@@ -19,8 +19,7 @@ public class Teleop extends BaseOpMode {
     private static final double RPM_ADJUSTMENT = 25.0;
     private static final double MAX_RPM = 6000.0;
     private static final double MIN_RPM = 0.0;
-    private static final double INITIAL_INTAKE_SPEED_THRESHOLD = 2;
-    private static final double SWITCH_INTAKE_SPEED_THRESHOLD = 10;
+    private static final double INITIAL_INTAKE_SPEED_THRESHOLD = 3;
 
     private static final Pose RELOC_POSE = PoseFactory.degrees().of(7.2, 70.75, 90);
 
@@ -37,6 +36,7 @@ public class Teleop extends BaseOpMode {
     private boolean previousTurretButton = false;
     private boolean previousDpadUp = false;
     private boolean previousDpadDown = false;
+    private boolean previousIntakeClutch = false;
     private boolean previousRelocalize = false;
 
     private ControlState controlState = null;
@@ -82,6 +82,7 @@ public class Teleop extends BaseOpMode {
 
         // Intake direction selection
         boolean intake = gamepad1.left_trigger > 0.1;
+        boolean intakeClutch = gamepad1.right_trigger < 0.75 && intake;
         double forwardVelocity = robot.drivetrain.follower.twist().vx;
 
         // Flower toggle
@@ -101,10 +102,10 @@ public class Teleop extends BaseOpMode {
             requestedState = ControlState.FLOWER;
         } else if (intake) {
             if (controlState == ControlState.FRONT) {
-                requestedState = forwardVelocity <= -SWITCH_INTAKE_SPEED_THRESHOLD
+                requestedState = (intakeClutch && previousIntakeClutch)
                         ? ControlState.BACK : ControlState.FRONT;
             } else if (controlState == ControlState.BACK) {
-                requestedState = forwardVelocity >= SWITCH_INTAKE_SPEED_THRESHOLD
+                requestedState = (intakeClutch && previousIntakeClutch)
                         ? ControlState.FRONT : ControlState.BACK;
             } else if (forwardVelocity >= INITIAL_INTAKE_SPEED_THRESHOLD) {
                 requestedState = ControlState.FRONT;
@@ -145,6 +146,7 @@ public class Teleop extends BaseOpMode {
 
         previousDpadUp = dpadUp;
         previousDpadDown = dpadDown;
+        previousIntakeClutch = intakeClutch;
 
         robot.shooter.setTargetRPM(targetRPM);
 
