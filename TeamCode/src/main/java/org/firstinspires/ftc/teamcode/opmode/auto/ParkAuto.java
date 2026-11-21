@@ -31,7 +31,7 @@ public class ParkAuto extends BaseOpMode {
 
     @Override
     protected void onInit() {
-        parkPath = Paths.line(START, PARK_POSE).heading(Interpolator.constant(START.heading()));
+        parkPath = Paths.line(START, PARK_POSE).heading(Interpolator.constant(START));
         schedule(stopMechanisms());
     }
 
