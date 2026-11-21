@@ -21,12 +21,12 @@ import org.firstinspires.ftc.teamcode.cmd.TurretCommands;
 import org.firstinspires.ftc.teamcode.opmode.BaseOpMode;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
-@Autonomous(name = "ParkAuto")
+@Autonomous(name = "One Tip Auto")
 public class OneTipAuto extends BaseOpMode {
 
     private static final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private static final Pose START = poseFactory.of(58, 7.2, 180);
+    private static final Pose START = poseFactory.of(60, 7.2, 180);
     private static final Pose PARK_POSE = poseFactory.of(12, 94, 90);
     private static final double SHOOT_RPM = 2200.0;
     private static final double SPIN_UP_MS = 4000.0;
