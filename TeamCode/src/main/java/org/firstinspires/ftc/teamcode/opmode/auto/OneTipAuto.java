@@ -63,10 +63,16 @@ public class OneTipAuto extends BaseOpMode {
                 // 4. Hold transfer/intake to shoot for specified duration
                 waitMs(SHOOT_TIME_MS),
 
-                // 5. Stop intake, transfer, and shooter mechanisms
+                // 5. Lift intake deployers after shooting if not already lifted
+                instant(() -> {
+                    robot.intake.setDeploymentFront(false);
+                    robot.intake.setDeploymentBack(false);
+                }),
+
+                // 6. Stop intake, transfer, and shooter mechanisms
                 stopMechanisms(),
 
-                // 6. Follow park path
+                // 7. Follow park path
                 follow(robot.drivetrain.follower, parkPath)
         );
 
