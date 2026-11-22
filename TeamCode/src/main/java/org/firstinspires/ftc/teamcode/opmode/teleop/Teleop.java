@@ -82,11 +82,11 @@ public class Teleop extends BaseOpMode {
 
         // Intake direction selection
         boolean intake = gamepad1.left_trigger > 0.1;
-        boolean intakeClutch = gamepad1.left_trigger < 0.75 && intake;
+        boolean intakeClutch = gamepad1.left_bumper;
         double forwardVelocity = robot.drivetrain.follower.twist().vx;
 
         // Flower toggle
-        boolean flowerButton = gamepad1.left_bumper;
+        boolean flowerButton = gamepad1.right_bumper;
         if (flowerButton && !previousFlowerButton) {
             flowerDown = !flowerDown;
         }
