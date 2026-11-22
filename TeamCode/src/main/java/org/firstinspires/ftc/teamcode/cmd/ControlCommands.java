@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.cmd;
 
 import static com.pedropathing.ivy.commands.Commands.instant;
+import static com.pedropathing.ivy.commands.Commands.waitMs;
+import static com.pedropathing.ivy.groups.Groups.sequential;
 
 import com.pedropathing.ivy.Command;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.subsys.Flower;
 import org.firstinspires.ftc.teamcode.subsys.Intake;
@@ -46,14 +49,29 @@ public class ControlCommands {
     }
 
     public static Command transfer(Intake intake, Transfer transfer, Flower flower) {
-        return instant(() -> {
-            intake.setDeploymentFront(false);
-            intake.setDeploymentBack(false);
-            intake.intake(0.75);
-            transfer.transfer(0.75);
-            transfer.setBlockerOpen(true);
-            flower.setDeployment(false);
-        }).requiring(intake, transfer, flower);
+        return sequential(
+                instant(() -> {
+                    transfer.setBlockerOpen(true);
+                    transfer.transfer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    transfer.transfer.setTargetPosition(0);
+                    transfer.transfer.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    transfer.transfer(1);
+                }),
+                waitMs(200),
+                instant(() -> transfer.transfer.setTargetPosition(-20)),
+                waitMs(400),
+                instant(() -> {
+                    transfer.transfer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    intake.setDeploymentFront(false);
+                    intake.setDeploymentBack(false);
+                    intake.intake(1);
+                    transfer.transfer(1);
+                    transfer.setBlockerOpen(true);
+                    flower.setDeployment(false);
+                })).requiring(intake, transfer, flower)
+                   .setEnd((endCondition) -> {
+                       transfer.transfer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                   });
     }
 
     public static Command intakePause(Intake intake, Transfer transfer, Flower flower) {
