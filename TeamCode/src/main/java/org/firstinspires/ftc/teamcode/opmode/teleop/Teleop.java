@@ -19,7 +19,7 @@ public class Teleop extends BaseOpMode {
     private static final double RPM_ADJUSTMENT = 25.0;
     private static final double MAX_RPM = 6000.0;
     private static final double MIN_RPM = 0.0;
-    private static final double INITIAL_INTAKE_SPEED_THRESHOLD = 3;
+    private static final double INITIAL_INTAKE_SPEED_THRESHOLD = 2.0;
 
     private static final Pose RELOC_POSE = PoseFactory.degrees().of(7.2, 70.75, 90);
 
@@ -82,11 +82,11 @@ public class Teleop extends BaseOpMode {
 
         // Intake direction selection
         boolean intake = gamepad1.left_trigger > 0.1;
-        boolean intakeClutch = gamepad1.right_trigger < 0.75 && intake;
+        boolean intakeClutch = gamepad1.left_bumper;
         double forwardVelocity = robot.drivetrain.follower.twist().vx;
 
         // Flower toggle
-        boolean flowerButton = gamepad1.left_bumper;
+        boolean flowerButton = gamepad1.right_bumper;
         if (flowerButton && !previousFlowerButton) {
             flowerDown = !flowerDown;
         }
@@ -102,10 +102,10 @@ public class Teleop extends BaseOpMode {
             requestedState = ControlState.FLOWER;
         } else if (intake) {
             if (controlState == ControlState.FRONT) {
-                requestedState = (intakeClutch && previousIntakeClutch)
+                requestedState = (intakeClutch && !previousIntakeClutch)
                         ? ControlState.BACK : ControlState.FRONT;
             } else if (controlState == ControlState.BACK) {
-                requestedState = (intakeClutch && previousIntakeClutch)
+                requestedState = (intakeClutch && !previousIntakeClutch)
                         ? ControlState.FRONT : ControlState.BACK;
             } else if (forwardVelocity >= INITIAL_INTAKE_SPEED_THRESHOLD) {
                 requestedState = ControlState.FRONT;

@@ -21,16 +21,15 @@ import org.firstinspires.ftc.teamcode.cmd.TurretCommands;
 import org.firstinspires.ftc.teamcode.opmode.BaseOpMode;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
-@Autonomous(name = "OneTipAuto")
+@Autonomous(name = "One Tip Auto")
 public class OneTipAuto extends BaseOpMode {
 
     private static final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private static final Pose START = poseFactory.of(55.1, 8.1, 180);
-    private static final Pose PARK_POSE = poseFactory.of(11.53, 88.89, 180);
-
-    private static final double SHOOT_RPM = 2150.0;
-    private static final double SPIN_UP_MS = 1000.0;
+    private static final Pose START = poseFactory.of(60, 7.2, 180);
+    private static final Pose PARK_POSE = poseFactory.of(12, 94, 90);
+    private static final double SHOOT_RPM = 2200.0;
+    private static final double SPIN_UP_MS = 4000.0;
     private static final double SHOOT_TIME_MS = 2500.0;
 
     private Path parkPath;
@@ -42,7 +41,7 @@ public class OneTipAuto extends BaseOpMode {
 
     @Override
     protected void onInit() {
-        parkPath = Paths.line(START, PARK_POSE).heading(Interpolator.constant(START.heading()));
+        parkPath = Paths.line(START, PARK_POSE).heading(Interpolator.linear(START, PARK_POSE));
         schedule(stopMechanisms());
     }
 
@@ -63,16 +62,10 @@ public class OneTipAuto extends BaseOpMode {
                 // 4. Hold transfer/intake to shoot for specified duration
                 waitMs(SHOOT_TIME_MS),
 
-                // 5. Lift intake deployers after shooting if not already lifted
-                instant(() -> {
-                    robot.intake.setDeploymentFront(false);
-                    robot.intake.setDeploymentBack(false);
-                }),
-
-                // 6. Stop intake, transfer, and shooter mechanisms
+                // 5. Stop intake, transfer, and shooter mechanisms
                 stopMechanisms(),
 
-                // 7. Follow park path
+                // 6. Follow park path
                 follow(robot.drivetrain.follower, parkPath)
         );
 
@@ -84,7 +77,7 @@ public class OneTipAuto extends BaseOpMode {
     protected void onLoop() {
         Pose currentPose = robot.drivetrain.follower.pose();
 
-        telemetry.addLine("=== PARK AUTO ===");
+        telemetry.addLine("ONE TIP AUTO");
         telemetry.addData("Pose", String.format(
                 "X: %.2f | Y: %.2f | H: %.1f deg",
                 currentPose.x(),
