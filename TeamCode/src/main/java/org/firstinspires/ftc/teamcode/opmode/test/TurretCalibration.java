@@ -90,7 +90,7 @@ public class TurretCalibration extends BaseOpMode {
             case STEP_1_DIRECTION:
                 if (gamepad2.right_bumper && !prevRb) {
                     DcMotorSimple.Direction nextDir =
-                            (robot.turret.turretMotor.getDirection() == DcMotorSimple.Direction.FORWARD)
+                            (robot.turret.turret.getDirection() == DcMotorSimple.Direction.FORWARD)
                                     ? DcMotorSimple.Direction.REVERSE
                                     : DcMotorSimple.Direction.FORWARD;
                     robot.turret.setDirection(nextDir);
@@ -175,7 +175,7 @@ public class TurretCalibration extends BaseOpMode {
         }
 
         telemetry.addLine("=== LIVE VALUES ===");
-        telemetry.addData("  Turret Direction", robot.turret.turretMotor.getDirection());
+        telemetry.addData("  Turret Direction", robot.turret.turret.getDirection());
         telemetry.addData("  Tunable kP", String.format("%.4f", tunableKp));
         telemetry.addData("  Turret Heading", String.format("%.1f deg (Target: %.1f | Err: %.1f)",
                 currentHeading, targetAngleDeg, targetAngleDeg - currentHeading));

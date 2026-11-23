@@ -6,8 +6,12 @@ import com.pedropathing.follower.ManualDrive;
 import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.Scheduler;
 import com.pedropathing.math.Pose;
+import com.pedropathing.revhub.drivetrains.Mecanum;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.cmd.ControlCommands;
 import org.firstinspires.ftc.teamcode.cmd.TurretCommands;
 import org.firstinspires.ftc.teamcode.opmode.BaseOpMode;
@@ -162,6 +166,15 @@ public class Teleop extends BaseOpMode {
         telemetry.addData("Turret Mode", zeroTurret ? "Fixed Zero" : "Tracking Goal");
         telemetry.addData("Turret Heading", robot.turret.getHeading());
         telemetry.addData("Flower", flowerDown);
+
+        // Motor current draw
+        telemetry.addLine("CURRENT DRAWS");
+        Mecanum mecanum = (Mecanum) robot.drivetrain.follower.drivetrain;
+        telemetry.addData("Drivetrain", mecanum.currentAmps());
+        telemetry.addData("Intake", robot.intake.intake.getCurrent(CurrentUnit.AMPS));
+        telemetry.addData("Transfer", robot.transfer.transfer.getCurrent(CurrentUnit.AMPS));
+        telemetry.addData("Shooter", robot.shooter.shooter.getCurrent(CurrentUnit.AMPS));
+        telemetry.addData("Turret", robot.turret.turret.getCurrent(CurrentUnit.AMPS));
         telemetry.update();
     }
 
