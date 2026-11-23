@@ -95,6 +95,8 @@ public class ControlCommands {
 
     public static Command intakeStop(Intake intake, Transfer transfer, Flower flower) {
         return instant(() -> {
+            intake.setDeploymentFront(false);
+            intake.setDeploymentBack(false);
             intake.frontDeployer.setPosition(0.56);
             intake.backDeployer.setPosition(0.71);
             intake.intake(0);

@@ -117,7 +117,11 @@ public class TwoTipAuto extends BaseOpMode {
                 ControlCommands.transfer(robot.intake, robot.transfer, robot.flower, robot.shooter),
                 waitMs(SHOOT_TIME_MS),
 
-                // 5. Stop mechanisms & follow park path
+                // 5. Retract both intakes (front & back), stop mechanisms & follow park path
+                instant(() -> {
+                    robot.intake.setDeploymentFront(false);
+                    robot.intake.setDeploymentBack(false);
+                }),
                 stopMechanisms(),
                 follow(robot.drivetrain.follower, parkEndPath)
         );
