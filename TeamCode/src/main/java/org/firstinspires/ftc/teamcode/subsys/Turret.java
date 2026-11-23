@@ -9,17 +9,17 @@ import com.qualcomm.robotcore.util.Range;
  * Provides simple, direct manual commands and PedroPathing Ivy command factories.
  */
 public class Turret {
-    public final DcMotorEx turretMotor;
+    public final DcMotorEx turret;
     private static final double TICKS_PER_DEGREE = 133.0 / 66.0;
 
     public Turret(HardwareMap hardwareMap, String motorName, DcMotorEx.Direction direction) {
-        this.turretMotor = hardwareMap.get(DcMotorEx.class, motorName);
-        this.turretMotor.setDirection(direction);
-        this.turretMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        this.turret = hardwareMap.get(DcMotorEx.class, motorName);
+        this.turret.setDirection(direction);
+        this.turret.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
     }
 
     public void setDirection(DcMotorEx.Direction direction) {
-        turretMotor.setDirection(direction);
+        turret.setDirection(direction);
     }
 
     /**
@@ -28,7 +28,7 @@ public class Turret {
      * @param power motor power [-1.0, 1.0]
      */
     public void setPower(double power) {
-        turretMotor.setPower(Range.clip(power, -1.0, 1.0));
+        turret.setPower(Range.clip(power, -1.0, 1.0));
     }
 
     /**
@@ -37,7 +37,7 @@ public class Turret {
      * @return encoder ticks
      */
     public int getTicks() {
-        return turretMotor.getCurrentPosition();
+        return turret.getCurrentPosition();
     }
 
     /**
@@ -53,7 +53,7 @@ public class Turret {
      * Resets turret encoder to zero.
      */
     public void resetEncoder() {
-        this.turretMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        this.turretMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        this.turret.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        this.turret.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
     }
 }
