@@ -57,13 +57,13 @@ public class Teleop extends BaseOpMode {
 
     @Override
     protected void onStart() {
-        robot.shooter.setTargetRPM(targetRPM);
+        robot.shooter.setTargetRPM(targetRPM * 0.5);
         Scheduler.schedule(closestGoalCommand);
     }
 
     @Override
     protected void onLoop() {
-        // Drive
+        // --- GAMEPAD 1: Chassis Drive & Controls ---
         DrivePowers drivePowers = ManualDrive.fieldCentric(
                 -gamepad1.left_stick_y,
                 -gamepad1.left_stick_x,
@@ -73,29 +73,32 @@ public class Teleop extends BaseOpMode {
 
         robot.drivetrain.follower.manual(drivePowers);
 
-        // Relocalize
+        // Relocalize (Gamepad 1: Y button)
         boolean relocalize = gamepad1.y;
         if (relocalize && !previousRelocalize) {
             robot.drivetrain.follower.setPose(RELOC_POSE);
         }
         previousRelocalize = relocalize;
 
-        // Intake direction selection
+        // Intake direction selection (Gamepad 1: Left Trigger & Left Bumper)
         boolean intake = gamepad1.left_trigger > 0.1;
         boolean intakeClutch = gamepad1.left_bumper;
         double forwardVelocity = robot.drivetrain.follower.twist().vx;
 
-        // Flower toggle
+        // Flower toggle (Gamepad 1: Right Bumper)
         boolean flowerButton = gamepad1.right_bumper;
         if (flowerButton && !previousFlowerButton) {
             flowerDown = !flowerDown;
         }
         previousFlowerButton = flowerButton;
 
-        // Control state
+        // Shooting / Transfer (Gamepad 1: Right Trigger)
+        boolean shooting = gamepad1.right_trigger > 0.1;
+
+        // Control State Determination
         ControlState requestedState;
 
-        if (gamepad1.right_trigger > 0.1) {
+        if (shooting) {
             requestedState = ControlState.TRANSFER;
             flowerDown = false;
         } else if (flowerDown) {
@@ -118,12 +121,12 @@ public class Teleop extends BaseOpMode {
             requestedState = ControlState.PAUSED;
         }
 
-        if (controlState != null || intake || flowerDown || gamepad1.right_trigger > 0.1) {
+        if (controlState != null || intake || flowerDown || shooting) {
             setControlState(requestedState);
         }
 
-        // Turret toggle
-        boolean turretButton = gamepad1.right_bumper;
+        // Turret Toggle (Gamepad 1: X button)
+        boolean turretButton = gamepad1.x;
         if (turretButton && !previousTurretButton) {
             zeroTurret = !zeroTurret;
             Scheduler.schedule(
@@ -132,7 +135,7 @@ public class Teleop extends BaseOpMode {
         }
         previousTurretButton = turretButton;
 
-        // Shooter RPM adjustment
+        // Shooter RPM Adjustment (Gamepad 1: D-Pad Up / Down)
         boolean dpadUp = gamepad1.dpad_up;
         boolean dpadDown = gamepad1.dpad_down;
 
@@ -148,14 +151,15 @@ public class Teleop extends BaseOpMode {
         previousDpadDown = dpadDown;
         previousIntakeClutch = intakeClutch;
 
-        robot.shooter.setTargetRPM(targetRPM);
+        // Shooter Target RPM: Full speed when shooting, half speed when idle
+        robot.shooter.setTargetRPM(shooting ? targetRPM : targetRPM * 0.5);
 
         // Telemetry
         telemetry.addData("Forward Velocity", "%.2f in/s", forwardVelocity);
         telemetry.addData("Control State", controlState);
         telemetry.addData("Target RPM", targetRPM);
-        telemetry.addData("Turret Mode",
-                zeroTurret ? "Fixed Right" : "Tracking Goal");
+        telemetry.addData("Shooter Idle (Half)", !shooting);
+        telemetry.addData("Turret Mode", zeroTurret ? "Fixed Zero" : "Tracking Goal");
         telemetry.addData("Turret Heading", robot.turret.getHeading());
         telemetry.addData("Flower", flowerDown);
         telemetry.update();
@@ -191,7 +195,7 @@ public class Teleop extends BaseOpMode {
 
             case TRANSFER:
                 Scheduler.schedule(ControlCommands.transfer(
-                        robot.intake, robot.transfer, robot.flower));
+                        robot.intake, robot.transfer, robot.flower, robot.shooter));
                 break;
         }
     }

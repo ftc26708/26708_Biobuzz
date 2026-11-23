@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.cmd;
 
 import static com.pedropathing.ivy.commands.Commands.instant;
+import static com.pedropathing.ivy.commands.Commands.waitUntil;
 import static com.pedropathing.ivy.commands.Commands.waitMs;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 
@@ -9,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.subsys.Flower;
 import org.firstinspires.ftc.teamcode.subsys.Intake;
+import org.firstinspires.ftc.teamcode.subsys.Shooter;
 import org.firstinspires.ftc.teamcode.subsys.Transfer;
 
 public class ControlCommands {
@@ -49,7 +51,13 @@ public class ControlCommands {
     }
 
     public static Command transfer(Intake intake, Transfer transfer, Flower flower) {
+        return transfer(intake, transfer, flower, null);
+    }
+
+    public static Command transfer(Intake intake, Transfer transfer, Flower flower, Shooter shooter) {
+        Command waitCommand = (shooter != null) ? waitUntil(shooter::isAtSpeed) : instant(() -> {});
         return sequential(
+                waitCommand,
                 instant(() -> {
                     transfer.setBlockerOpen(true);
                     transfer.transfer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

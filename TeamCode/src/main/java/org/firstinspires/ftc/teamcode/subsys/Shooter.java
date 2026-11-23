@@ -144,12 +144,12 @@ public class Shooter {
      * @return true if target RPM is active and current RPM is within tolerance
      */
     public boolean isAtSpeed() {
-        return getCurrentRPM() > targetRPM;
+        return targetRPM > 0.0 && getCurrentRPM() >= targetRPM * 0.95;
     }
 
     public void periodic() {
         // Bang-Bang controller run every loop
-        if (isAtSpeed() || targetRPM <= 0.0) {
+        if (getCurrentRPM() >= targetRPM || targetRPM <= 0.0) {
             shooter.setPower(0.0);
         } else {
             shooter.setPower(1.0);

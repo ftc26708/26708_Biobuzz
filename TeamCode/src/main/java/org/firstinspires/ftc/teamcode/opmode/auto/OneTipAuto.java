@@ -28,7 +28,7 @@ public class OneTipAuto extends BaseOpMode {
 
     private static final Pose START = poseFactory.of(60, 7.2, 180);
     private static final Pose PARK_POSE = poseFactory.of(12, 94, 90);
-    private static final double SHOOT_RPM = 2200.0;
+    private static final double SHOOT_RPM = 2160.0;
     private static final double SPIN_UP_MS = 4000.0;
     private static final double SHOOT_TIME_MS = 2500.0;
 
@@ -57,7 +57,7 @@ public class OneTipAuto extends BaseOpMode {
                 waitMs(SPIN_UP_MS),
 
                 // 3. Run transfer & intake to shoot elements
-                ControlCommands.transfer(robot.intake, robot.transfer, robot.flower),
+                ControlCommands.transfer(robot.intake, robot.transfer, robot.flower, robot.shooter),
 
                 // 4. Hold transfer/intake to shoot for specified duration
                 waitMs(SHOOT_TIME_MS),
