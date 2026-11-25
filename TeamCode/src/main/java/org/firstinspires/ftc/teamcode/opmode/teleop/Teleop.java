@@ -7,9 +7,7 @@ import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.Scheduler;
 import com.pedropathing.math.Pose;
 import com.pedropathing.revhub.drivetrains.Mecanum;
-import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.cmd.ControlCommands;
@@ -23,12 +21,12 @@ public class Teleop extends BaseOpMode {
     private static final double RPM_ADJUSTMENT = 25.0;
     private static final double MAX_RPM = 6000.0;
     private static final double MIN_RPM = 0.0;
-    private static final double INITIAL_INTAKE_SPEED_THRESHOLD = 2.0;
+    private static final double INTAKE_SPEED_THRESHOLD = 20.0;
 
     private static final Pose RELOC_POSE = PoseFactory.degrees().of(7.2, 70.75, 90);
 
     private enum ControlState {
-        PAUSED, FRONT, BACK, FLOWER, TRANSFER
+        PAUSED, DECIDE, FRONT, BACK, FLOWER, TRANSFER, THROUGH
     }
 
     private double targetRPM = STARTING_RPM;
@@ -100,8 +98,13 @@ public class Teleop extends BaseOpMode {
         ControlState requestedState;
 
         if (gamepad1.right_trigger > 0.1) {
-            requestedState = ControlState.TRANSFER;
+            if (intake) {
+                requestedState = ControlState.THROUGH;
+            } else {
+                requestedState = ControlState.TRANSFER;
+            }
             flowerDown = false;
+            previousFlowerButton = false;
         } else if (flowerDown) {
             requestedState = ControlState.FLOWER;
         } else if (intake) {
@@ -111,12 +114,12 @@ public class Teleop extends BaseOpMode {
             } else if (controlState == ControlState.BACK) {
                 requestedState = (intakeClutch && !previousIntakeClutch)
                         ? ControlState.FRONT : ControlState.BACK;
-            } else if (forwardVelocity >= INITIAL_INTAKE_SPEED_THRESHOLD) {
+            } else if (forwardVelocity >= INTAKE_SPEED_THRESHOLD) {
                 requestedState = ControlState.FRONT;
-            } else if (forwardVelocity <= -INITIAL_INTAKE_SPEED_THRESHOLD) {
+            } else if (forwardVelocity <= -INTAKE_SPEED_THRESHOLD) {
                 requestedState = ControlState.BACK;
             } else {
-                requestedState = ControlState.PAUSED;
+                requestedState = ControlState.DECIDE;
             }
         } else {
             requestedState = ControlState.PAUSED;
@@ -127,7 +130,7 @@ public class Teleop extends BaseOpMode {
         }
 
         // Turret toggle
-        boolean turretButton = gamepad1.right_bumper;
+        boolean turretButton = gamepad1.b;
         if (turretButton && !previousTurretButton) {
             zeroTurret = !zeroTurret;
             Scheduler.schedule(
@@ -187,6 +190,11 @@ public class Teleop extends BaseOpMode {
                         robot.intake, robot.transfer, robot.flower));
                 break;
 
+            case DECIDE:
+                Scheduler.schedule(ControlCommands.intakeDecide(
+                        robot.intake, robot.transfer, robot.flower));
+                break;
+
             case FRONT:
                 Scheduler.schedule(ControlCommands.intakeFront(
                         robot.intake, robot.transfer, robot.flower));
@@ -204,6 +212,11 @@ public class Teleop extends BaseOpMode {
 
             case TRANSFER:
                 Scheduler.schedule(ControlCommands.transfer(
+                        robot.intake, robot.transfer, robot.flower));
+                break;
+
+            case THROUGH:
+                Scheduler.schedule(ControlCommands.passThrough(
                         robot.intake, robot.transfer, robot.flower));
                 break;
         }
