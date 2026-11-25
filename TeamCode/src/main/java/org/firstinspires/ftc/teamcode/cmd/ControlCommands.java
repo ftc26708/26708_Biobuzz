@@ -86,8 +86,8 @@ public class ControlCommands {
                 waitMs(300),
                 instant(() -> {
                     transfer.transfer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    intake.setDeploymentFront(false);
-                    intake.setDeploymentBack(false);
+                    intake.setDeploymentFront(true);
+                    intake.setDeploymentBack(true);
                     intake.intake(1);
                     transfer.transfer(1);
                     transfer.setBlockerOpen(true);
