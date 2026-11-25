@@ -56,7 +56,7 @@ public class ControlCommands {
                     transfer.transfer.setTargetPosition(0);
                     transfer.transfer.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     transfer.transfer(1);
-                    instant(() -> transfer.transfer.setTargetPosition(-20));
+                    transfer.transfer.setTargetPosition(-20);
                 }),
                 waitMs(300),
                 instant(() -> {
