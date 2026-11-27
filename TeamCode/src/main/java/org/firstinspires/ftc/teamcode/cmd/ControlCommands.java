@@ -64,10 +64,9 @@ public class ControlCommands {
                     transfer.transfer.setTargetPosition(0);
                     transfer.transfer.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     transfer.transfer(1);
+                    transfer.transfer.setTargetPosition(-20);
                 }),
-                waitMs(200),
-                instant(() -> transfer.transfer.setTargetPosition(-20)),
-                waitMs(400),
+                waitMs(300),
                 instant(() -> {
                     transfer.transfer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     intake.setDeploymentFront(false);
@@ -77,9 +76,34 @@ public class ControlCommands {
                     transfer.setBlockerOpen(true);
                     flower.setDeployment(false);
                 })).requiring(intake, transfer, flower)
-                   .setEnd((endCondition) -> {
-                       transfer.transfer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                   });
+                   .setEnd((endCondition) ->
+                           transfer.transfer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
+                   );
+    }
+
+    public static Command passThrough(Intake intake, Transfer transfer, Flower flower) {
+        return sequential(
+                instant(() -> {
+                    transfer.setBlockerOpen(true);
+                    transfer.transfer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    transfer.transfer.setTargetPosition(0);
+                    transfer.transfer.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    transfer.transfer(1);
+                    transfer.transfer.setTargetPosition(-20);
+                }),
+                waitMs(300),
+                instant(() -> {
+                    transfer.transfer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    intake.setDeploymentFront(true);
+                    intake.setDeploymentBack(true);
+                    intake.intake(1);
+                    transfer.transfer(1);
+                    transfer.setBlockerOpen(true);
+                    flower.setDeployment(false);
+                })).requiring(intake, transfer, flower)
+                .setEnd((endCondition) ->
+                    transfer.transfer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
+                );
     }
 
     public static Command intakePause(Intake intake, Transfer transfer, Flower flower) {
@@ -93,6 +117,16 @@ public class ControlCommands {
         }).requiring(intake, transfer, flower);
     }
 
+    public static Command intakeDecide(Intake intake, Transfer transfer, Flower flower) {
+        return instant(() -> {
+            intake.setDeploymentFront(true);
+            intake.setDeploymentBack(true);
+            intake.intake(1);
+            transfer.transfer(0);
+            transfer.setBlockerOpen(false);
+            flower.setDeployment(false);
+        }).requiring(intake, transfer, flower);
+    }
     public static Command intakeStop(Intake intake, Transfer transfer, Flower flower) {
         return instant(() -> {
             intake.setDeploymentFront(false);
