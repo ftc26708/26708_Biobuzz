@@ -133,7 +133,7 @@ public class TwoTipAuto extends BaseOpMode {
     protected void onLoop() {
         Pose currentPose = robot.drivetrain.follower.pose();
 
-        telemetry.addLine("TWO TIP AUTO");
+        telemetry.addLine("TWO TIP AUTO, 16 balls intaked");
         telemetry.addData("Pose", String.format(
                 Locale.US,
                 "X: %.2f | Y: %.2f | H: %.1f deg",
